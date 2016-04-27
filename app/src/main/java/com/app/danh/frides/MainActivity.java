@@ -13,11 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.CookieStore;
-import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -31,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button loginBtn;
     TextView tv;
     HashMap<String, String> postDataParams;
-    CookieManager cookieManager;
+    String cookieHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv = (TextView) findViewById(R.id.text);
 
         postDataParams = new HashMap<>();
-
-        //cookieManager = new CookieManager();
-        //CookieHandler.setDefault(cookieManager);
+        cookieHeader = null;
     }
 
     @Override
@@ -60,8 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private class MyAsyncTask extends AsyncTask<String, Integer, String> {
-        private String getCsrfToken(String requestURL) {
-            String csrf_token = null;
+        private void getCookieHeader(String requestURL) {
             try {
                 URL url = new URL(requestURL);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -73,31 +66,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
                     // Get cookies
                     List<String> cookies = conn.getHeaderFields().get("Set-Cookie");
-                    for (String cookie : cookies) {
-                        if (cookie.contains("csrf")) {
-                            //String[] part = cookie.split(";");
-                            //String[] csrf = part[0].split("=");
-                            //csrf_token = csrf[1];
-                            csrf_token = cookie.split(";")[0];
+                    StringBuilder sb = new StringBuilder();
 
-                            break;
+                    for (String cookie : cookies) {
+                        if (sb.length() > 0) {
+                            sb.append(";");
                         }
+                        // Only want the first part of the cookie header that has the value
+                        String value = cookie.split(";")[0];
+                        sb.append(value);
                     }
+
+                    cookieHeader = sb.toString();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            return csrf_token;
         }
 
-        private String sendPostRequest(String requestURL, String csrf_token) {
+        private String sendPostRequest(String requestURL) {
             String response = "";
             try {
                 URL url = new URL(requestURL);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("Cookie", csrf_token);
-                conn.setRequestProperty("X-CSRFToken", csrf_token.split("=")[1]);
+                if (cookieHeader != null) {
+                    conn.setRequestProperty("Cookie", cookieHeader);
+                    String[] parts = cookieHeader.split(";");
+                    for (String part : parts) {
+                        if (part.contains("csrf")) {
+                            conn.setRequestProperty("X-CSRFToken", part.split("=")[1]);
+                            break;
+                        }
+                    }
+                }
                 conn.setRequestMethod("POST");
                 conn.setReadTimeout(15000);
                 conn.setConnectTimeout(15000);
@@ -116,10 +117,68 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 int responseCode = conn.getResponseCode();
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    // Get cookies
+                    // Get cookies and update the cookieHeader after we logged in
                     List<String> cookies = conn.getHeaderFields().get("Set-Cookie");
+                    StringBuilder sb = new StringBuilder();
+
+                    for (String cookie : cookies) {
+                        if (sb.length() > 0) {
+                            sb.append(";");
+                        }
+                        // Only want the first part of the cookie header that has the value
+                        String value = cookie.split(";")[0];
+                        sb.append(value);
+                    }
+
+                    cookieHeader = sb.toString();
 
                     // Get response string
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    while ((line = br.readLine()) != null) {
+                        response += line;
+                    }
+                } else {
+                    response = "";
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        }
+
+        String testPersonalPage(String requestURL) {
+            String response = "";
+            try {
+                URL url = new URL(requestURL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                if (cookieHeader != null) {
+                    conn.setRequestProperty("Cookie", cookieHeader);
+                    String[] parts = cookieHeader.split(";");
+                    for (String part : parts) {
+                        if (part.contains("csrf")) {
+                            conn.setRequestProperty("X-CSRFToken", part.split("=")[1]);
+                            break;
+                        }
+                    }
+                }
+                conn.setRequestMethod("POST");
+                conn.setReadTimeout(15000);
+                conn.setConnectTimeout(15000);
+                conn.setDoOutput(true);
+
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                String requestBody = getPostDataString(postDataParams);
+                writer.write(requestBody);
+                writer.flush();
+                writer.close();
+                os.close();
+
+                int responseCode = conn.getResponseCode();
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
                     String line;
                     BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     while ((line = br.readLine()) != null) {
@@ -140,8 +199,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         protected String doInBackground(String... params) {
             String requestURL = params[0];
 
-            String csrf_token = getCsrfToken(requestURL);
-            String response = sendPostRequest(requestURL, csrf_token);
+            if (cookieHeader == null) {
+                getCookieHeader(requestURL);
+            }
+            String response = sendPostRequest(requestURL);
+            response = testPersonalPage("http://52.38.64.32/main/personal");
 
             return response;
         }
