@@ -5,18 +5,29 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.app.danh.frides.R;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+import org.w3c.dom.Text;
+
+import java.util.HashMap;
+
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, MyAsyncListener {
     EditText registerUsername;
-    EditText registerPassword;
-    EditText registerName;
+    EditText registerPassword1;
+    EditText registerPassword2;
+    EditText registerFName;
+    EditText registerLName;
     EditText registerEmail;
     EditText registerSecretQuestion;
     EditText registerSecretAnswer;
-    Button register;
-    Button backToLogin;
+    Button registerBtn;
+    //Button backToLoginBtn;
+
+    MyAsyncTask myAsyncTask = null;
+    HashMap<String, String> postDataParams;
+    TextView tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,25 +35,54 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
 
         registerUsername = (EditText) findViewById(R.id.registerUsername);
-        registerPassword = (EditText) findViewById(R.id.registerPassword);
-        registerName = (EditText) findViewById(R.id.registerName);
+        registerPassword1 = (EditText) findViewById(R.id.registerPassword1);
+        registerPassword2 = (EditText) findViewById(R.id.registerPassword2);
+        registerFName = (EditText) findViewById(R.id.registerFName);
+        registerLName = (EditText) findViewById(R.id.registerLName);
         registerEmail = (EditText) findViewById(R.id.registerEmail);
         registerSecretQuestion = (EditText) findViewById(R.id.registerSecretQuestion);
         registerSecretAnswer = (EditText) findViewById(R.id.registerSecretAnswer);
-        register = (Button) findViewById(R.id.registerButton);
-        backToLogin = (Button) findViewById(R.id.backToLogin);
+        registerBtn = (Button) findViewById(R.id.registerBtn);
+        //backToLoginBtn = (Button) findViewById(R.id.backToLoginBtn);
 
-        register.setOnClickListener(this);
-        backToLogin.setOnClickListener(this);
+        registerBtn.setOnClickListener(this);
+        //backToLoginBtn.setOnClickListener(this);
+
+        postDataParams = new HashMap<>();
+
+        tv = (TextView) findViewById(R.id.text);
     }
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == register.getId()) {
+        if(v.getId() == registerBtn.getId()) {
+            // TODO: make sure all fields are filled (except email?!?!)
+            // ...
 
-        }
-        else if(v.getId() == backToLogin.getId()) {
+            postDataParams.clear();
+            postDataParams.put("username", registerUsername.getText().toString());
+            postDataParams.put("password1", registerPassword1.getText().toString());
+            postDataParams.put("password2", registerPassword1.getText().toString());
+            postDataParams.put("first_name", registerFName.getText().toString());
+            postDataParams.put("last_name", registerLName.getText().toString());
+            postDataParams.put("email", registerEmail.getText().toString());
+            postDataParams.put("secret_question", registerSecretQuestion.getText().toString());
+            postDataParams.put("secret_answer", registerSecretAnswer.getText().toString());
 
+            Data data = new Data("http://52.38.64.32/main/register", postDataParams);
+            myAsyncTask = new MyAsyncTask(this);
+            myAsyncTask.execute(data);
         }
+//        else if(v.getId() == backToLoginBtn.getId()) {
+//            this.finish();
+//        }
+    }
+
+    @Override
+    public void onSuccessfulExecute(String response) {
+        tv.setText(response);
+
+        myAsyncTask.cancel(true);
+        myAsyncTask = null;
     }
 }

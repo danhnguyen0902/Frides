@@ -1,5 +1,6 @@
 package com.app.danh.frides;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,16 +10,16 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, MyAsyncListener {
     EditText loginUsername;
     EditText loginPassword;
     Button loginBtn;
     Button forgotPasswordBtn;
     Button registerBtn;
     TextView tv;
+    static String cookieHeader;
     HashMap<String, String> postDataParams;
-    String cookieHeader;
-    MyAsyncTask asyncTask;
+    MyAsyncTask myAsyncTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         cookieHeader = null;
         postDataParams = new HashMap<>();
-        asyncTask = new MyAsyncTask(this);
 
         tv = (TextView) findViewById(R.id.text);
     }
@@ -49,29 +49,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             postDataParams.put("username", loginUsername.getText().toString());
             postDataParams.put("password", loginPassword.getText().toString());
 
-            asyncTask.execute("http://52.38.64.32/main/login");
+            Data data = new Data("http://52.38.64.32/main/login", postDataParams);
+            myAsyncTask = new MyAsyncTask(this);
+            myAsyncTask.execute(data);
         }
         else if(v.getId() == forgotPasswordBtn.getId()) {
 
         }
         else if(v.getId() == registerBtn.getId()) {
-
+            Intent myIntent = new Intent(this, RegisterActivity.class);
+            this.startActivity(myIntent);
         }
     }
 
-    public String getCookieHeader() {
-        return cookieHeader;
-    }
+    @Override
+    public void onSuccessfulExecute(String response) {
+        tv.setText(response);
 
-    public void setCookieHeader(String cookieHeader) {
-        this.cookieHeader = cookieHeader;
-    }
-
-    public HashMap<String, String> getPostDataParams() {
-        return postDataParams;
-    }
-
-    public void setText(String text) {
-        tv.setText(text);
+        myAsyncTask.cancel(true);
+        myAsyncTask = null;
     }
 }

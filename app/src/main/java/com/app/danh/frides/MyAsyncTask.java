@@ -20,12 +20,15 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by Danh on 4/27/2016.
  */
-public class MyAsyncTask extends AsyncTask<String, Integer, String> {
-    LoginActivity lActivity;
+public class MyAsyncTask extends AsyncTask<Data, Integer, String> {
+    private static String cookieHeader = null;
+    private HashMap<String, String> postDataParams;
+    private MyAsyncListener myAsyncListener;
 
-    public MyAsyncTask(LoginActivity lActivity) {
+    public MyAsyncTask(MyAsyncListener myAsyncListener) {
         super();
-        this.lActivity = lActivity;
+
+        this.myAsyncListener = myAsyncListener;
     }
 
     private void getCookieHeader(String requestURL) {
@@ -40,18 +43,20 @@ public class MyAsyncTask extends AsyncTask<String, Integer, String> {
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 // Get cookies
                 List<String> cookies = conn.getHeaderFields().get("Set-Cookie");
-                StringBuilder sb = new StringBuilder();
+                if (cookies != null) {
+                    StringBuilder sb = new StringBuilder();
 
-                for (String cookie : cookies) {
-                    if (sb.length() > 0) {
-                        sb.append(";");
+                    for (String cookie : cookies) {
+                        if (sb.length() > 0) {
+                            sb.append(";");
+                        }
+                        // Only want the first part of the cookie header that has the value
+                        String value = cookie.split(";")[0];
+                        sb.append(value);
                     }
-                    // Only want the first part of the cookie header that has the value
-                    String value = cookie.split(";")[0];
-                    sb.append(value);
-                }
 
-                lActivity.setCookieHeader(sb.toString());
+                    cookieHeader = sb.toString();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,8 +65,6 @@ public class MyAsyncTask extends AsyncTask<String, Integer, String> {
 
     private String sendPostRequest(String requestURL) {
         String response = "";
-        String cookieHeader = lActivity.getCookieHeader();
-        HashMap<String, String> postDataParams = lActivity.getPostDataParams();
 
         try {
             URL url = new URL(requestURL);
@@ -94,18 +97,20 @@ public class MyAsyncTask extends AsyncTask<String, Integer, String> {
 
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpsURLConnection.HTTP_OK) {
-                // Get cookies and update the cookieHeader after we logged in
+                // Get cookies and update the cookieHeader only after we LOGGED IN
                 List<String> cookies = conn.getHeaderFields().get("Set-Cookie");
-                StringBuilder sb = new StringBuilder();
-                for (String cookie : cookies) {
-                    if (sb.length() > 0) {
-                        sb.append(";");
+                if (cookies != null) {
+                    StringBuilder sb = new StringBuilder();
+                    for (String cookie : cookies) {
+                        if (sb.length() > 0) {
+                            sb.append(";");
+                        }
+                        // Only want the first part of the cookie header that has the value
+                        String value = cookie.split(";")[0];
+                        sb.append(value);
                     }
-                    // Only want the first part of the cookie header that has the value
-                    String value = cookie.split(";")[0];
-                    sb.append(value);
+                    cookieHeader = sb.toString();
                 }
-                lActivity.setCookieHeader(sb.toString());
 
                 // Get response string
                 String line;
@@ -124,65 +129,66 @@ public class MyAsyncTask extends AsyncTask<String, Integer, String> {
         return response;
     }
 
-    String testPersonalPage(String requestURL) {
-        String response = "";
-        String cookieHeader = lActivity.getCookieHeader();
-        HashMap<String, String> postDataParams = lActivity.getPostDataParams();
-
-        try {
-            URL url = new URL(requestURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            if (cookieHeader != null) {
-                conn.setRequestProperty("Cookie", cookieHeader);
-                String[] parts = cookieHeader.split(";");
-                for (String part : parts) {
-                    if (part.contains("csrf")) {
-                        conn.setRequestProperty("X-CSRFToken", part.split("=")[1]);
-                        break;
-                    }
-                }
-            }
-            conn.setRequestMethod("POST");
-            conn.setReadTimeout(15000);
-            conn.setConnectTimeout(15000);
-            conn.setDoOutput(true);
-
-            OutputStream os = conn.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-            String requestBody = getPostDataString(postDataParams);
-            writer.write(requestBody);
-            writer.flush();
-            writer.close();
-            os.close();
-
-            int responseCode = conn.getResponseCode();
-            if (responseCode == HttpsURLConnection.HTTP_OK) {
-                String line;
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                while ((line = br.readLine()) != null) {
-                    response += line;
-                }
-            } else {
-                response = "";
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return response;
-    }
+    // TODO: remove
+//    String testPersonalPage(String requestURL) {
+//        String response = "";
+//
+//        try {
+//            URL url = new URL(requestURL);
+//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//            if (cookieHeader != null) {
+//                conn.setRequestProperty("Cookie", cookieHeader);
+//                String[] parts = cookieHeader.split(";");
+//                for (String part : parts) {
+//                    if (part.contains("csrf")) {
+//                        conn.setRequestProperty("X-CSRFToken", part.split("=")[1]);
+//                        break;
+//                    }
+//                }
+//            }
+//            conn.setRequestMethod("POST");
+//            conn.setReadTimeout(15000);
+//            conn.setConnectTimeout(15000);
+//            conn.setDoOutput(true);
+//
+//            OutputStream os = conn.getOutputStream();
+//            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+//            String requestBody = getPostDataString(postDataParams);
+//            writer.write(requestBody);
+//            writer.flush();
+//            writer.close();
+//            os.close();
+//
+//            int responseCode = conn.getResponseCode();
+//            if (responseCode == HttpsURLConnection.HTTP_OK) {
+//                String line;
+//                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//                while ((line = br.readLine()) != null) {
+//                    response += line;
+//                }
+//            } else {
+//                response = "";
+//
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return response;
+//    }
 
     @Override
-    protected String doInBackground(String... params) {
-        String requestURL = params[0];
-        String cookieHeader = lActivity.getCookieHeader();
+    protected String doInBackground(Data... params) {
+        String requestURL = params[0].getRequestURL();
+        postDataParams = params[0].getPostDataParams();
 
         if (cookieHeader == null) {
             getCookieHeader(requestURL);
         }
         String response = sendPostRequest(requestURL);
-        response = testPersonalPage("http://52.38.64.32/main/personal");
+
+        // TODO: remove
+        //response = testPersonalPage("http://52.38.64.32/main/personal");
 
         return response;
     }
@@ -205,7 +211,7 @@ public class MyAsyncTask extends AsyncTask<String, Integer, String> {
     }
 
     protected void onPostExecute(String response) {
-        lActivity.setText(response);
+        myAsyncListener.onSuccessfulExecute(response);
     }
 
     protected void onProgressUpdate(Integer... progress) {

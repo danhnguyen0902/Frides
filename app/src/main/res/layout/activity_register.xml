@@ -34,15 +34,31 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/registerPassword" />
+        android:id="@+id/registerPassword1" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name:"/>
+        android:text="Confirm Password:" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/registerName" />
+        android:id="@+id/registerPassword2" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="First Name:"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/registerFName" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Last Name:"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/registerLName" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,10 +87,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Register"
-        android:id="@+id/registerButton"/>
-    <Button
-        android:layout_width="wrap_content"
+        android:id="@+id/registerBtn"/>
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Back to Log in"-->
+        <!--android:id="@+id/backToLoginBtn"/>-->
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Back to Log in"
-        android:id="@+id/backToLogin"/>
+        android:text="Initial Text"
+        android:id="@+id/text"/>
 </LinearLayout>
