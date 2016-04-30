@@ -2,8 +2,6 @@ package com.app.danh.frides;
 
 import android.os.AsyncTask;
 
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -25,10 +23,10 @@ import javax.net.ssl.HttpsURLConnection;
 public class MyAsyncTask extends AsyncTask<Data, Integer, String> {
     private static String cookieHeader = null;
     private HashMap<String, String> postDataParams;
-    private MyAsyncListener myAsyncListener;
+    private OnMyAsyncListener myAsyncListener;
     private static final String getCsrfURL = "http://52.38.64.32/main/get_csrf_token";
 
-    public MyAsyncTask(MyAsyncListener myAsyncListener) {
+    public MyAsyncTask(OnMyAsyncListener myAsyncListener) {
         super();
 
         this.myAsyncListener = myAsyncListener;

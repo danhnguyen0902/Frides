@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
-public class ChangePasswordActivity extends AppCompatActivity implements View.OnClickListener, MyAsyncListener {
+public class ChangePasswordActivity extends AppCompatActivity implements View.OnClickListener, OnMyAsyncListener {
     TextView passQuestion;
     EditText passAnswer;
     Button getAnswerBtn;

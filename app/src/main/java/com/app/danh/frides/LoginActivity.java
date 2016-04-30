@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, MyAsyncListener {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, OnMyAsyncListener {
     EditText loginUsername;
     EditText loginPassword;
     Button loginBtn;

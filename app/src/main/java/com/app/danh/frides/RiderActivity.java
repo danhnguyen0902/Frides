@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class RiderActivity extends FragmentActivity implements View.OnClickListener, MyAsyncListener {
+public class RiderActivity extends FragmentActivity implements View.OnClickListener, OnMyAsyncListener, AccountFragment.OnFragmentListener {
 
     FragmentPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -48,6 +48,9 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
 
     MyAsyncTask myAsyncTask = null;
     HashMap<String, String> postDataParams;
+    User user = null;
+
+    String accountFrag;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,6 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         initListener();
 
         postDataParams = new HashMap<>();
-
     }
 
 
@@ -149,7 +151,8 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
                         txtViewAccount.setTextColor(Color.parseColor("#777777"));
                         topBarText.setText("Account Information");
 
-                        // TODO: add http requests
+                        // Get user's personal information
+                        accountFrag = "get info";
                         postDataParams.clear();
                         Data data = new Data("GET", "http://52.38.64.32/main/personal", postDataParams);
                         myAsyncTask = new MyAsyncTask(RiderActivity.this);
@@ -206,16 +209,49 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
 
     @Override
     public void onSuccessfulExecute(String response) {
-        try {
-            JSONObject jsonObject = new JSONObject(response);
+        if (accountFrag.equalsIgnoreCase("get info")) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                JSONObject obj = jsonObject.getJSONObject("fields");
+                String username = obj.getString("username");
+                String fName = obj.getString("first_name");
+                String lName = obj.getString("last_name");
+                String email = obj.getString("email");
+                if (email.equalsIgnoreCase("null")) {
+                    email = "";
+                }
+                String secretQuestion = obj.getString("secret_question");
+                String secretAnswer = obj.getString("secret_answer");
 
-            // TODO: remove
-            ((AccountFragment)accountFragment).setText(response);
-        } catch (JSONException e) {
-            e.printStackTrace();
+                user = new User(username, fName, lName, email, secretQuestion, secretAnswer);
+                ((AccountFragment) accountFragment).updateUI(user);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else if (accountFrag.equalsIgnoreCase("update info")) {
+            ((AccountFragment) accountFragment).setText(response);
         }
 
     }
+
+    @Override
+    public void onButtonClicked(JSONObject obj) {
+        accountFrag = "update info";
+        postDataParams.clear();
+        try {
+            postDataParams.put("password1", obj.get("password1").toString());
+            postDataParams.put("password2", obj.get("password2").toString());
+            postDataParams.put("first_name", obj.get("fName").toString());
+            postDataParams.put("last_name", obj.get("lName").toString());
+            postDataParams.put("email", obj.get("email").toString());
+            postDataParams.put("secret_question", obj.get("secretQuestion").toString());
+            postDataParams.put("secret_answer", obj.get("secretAnswer").toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Data data = new Data("POST", "http://52.38.64.32/main/personal", postDataParams);
+        myAsyncTask = new MyAsyncTask(this);
+        myAsyncTask.execute(data);
+    }
 }
-
-

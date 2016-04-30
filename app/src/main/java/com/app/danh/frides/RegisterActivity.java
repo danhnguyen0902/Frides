@@ -8,13 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.app.danh.frides.R;
-
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, MyAsyncListener {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, OnMyAsyncListener {
     EditText registerUsername;
     EditText registerPassword1;
     EditText registerPassword2;
