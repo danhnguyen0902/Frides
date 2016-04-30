@@ -1,5 +1,6 @@
 package com.app.danh.frides;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -75,7 +76,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onSuccessfulExecute(String response) {
         tv.setText(response);
-
+        if (response.compareToIgnoreCase("Account is registered") == 0)
+        {
+            Intent myIntent = new Intent(this, MainActivity.class);
+            this.startActivity(myIntent);
+        }
         myAsyncTask.cancel(true);
         myAsyncTask = null;
     }
