@@ -15,17 +15,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/welcomeText"
-        android:text="Welcome, USER"
         android:textSize="36dp"/>
     <Button
-        android:id="@+id/driverButton"
+        android:id="@+id/driverBtn"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="I can drive" />
+        android:text="I am a Driver" />
 
     <Button
-        android:id="@+id/riderDriver"
+        android:id="@+id/riderBtn"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="I need to Rider" />
+        android:text="I am a Rider" />
 </LinearLayout>

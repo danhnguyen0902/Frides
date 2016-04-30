@@ -2,6 +2,8 @@ package com.app.danh.frides;
 
 import android.os.AsyncTask;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -24,6 +26,7 @@ public class MyAsyncTask extends AsyncTask<Data, Integer, String> {
     private static String cookieHeader = null;
     private HashMap<String, String> postDataParams;
     private MyAsyncListener myAsyncListener;
+    private static final String getCsrfURL = "http://52.38.64.32/main/get_csrf_token";
 
     public MyAsyncTask(MyAsyncListener myAsyncListener) {
         super();
@@ -130,66 +133,62 @@ public class MyAsyncTask extends AsyncTask<Data, Integer, String> {
         return response;
     }
 
-    // TODO: remove
-//    String testPersonalPage(String requestURL) {
-//        String response = "";
-//
-//        try {
-//            URL url = new URL(requestURL);
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            if (cookieHeader != null) {
-//                conn.setRequestProperty("Cookie", cookieHeader);
-//                String[] parts = cookieHeader.split(";");
-//                for (String part : parts) {
-//                    if (part.contains("csrf")) {
-//                        conn.setRequestProperty("X-CSRFToken", part.split("=")[1]);
-//                        break;
-//                    }
-//                }
-//            }
-//            conn.setRequestMethod("POST");
-//            conn.setReadTimeout(15000);
-//            conn.setConnectTimeout(15000);
-//            conn.setDoOutput(true);
-//
-//            OutputStream os = conn.getOutputStream();
-//            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-//            String requestBody = getPostDataString(postDataParams);
-//            writer.write(requestBody);
-//            writer.flush();
-//            writer.close();
-//            os.close();
-//
-//            int responseCode = conn.getResponseCode();
-//            if (responseCode == HttpsURLConnection.HTTP_OK) {
-//                String line;
-//                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//                while ((line = br.readLine()) != null) {
-//                    response += line;
-//                }
-//            } else {
-//                response = "";
-//
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return response;
-//    }
+    private String sendGetRequest(String requestURL) {
+        String response = "";
+
+        try {
+            URL url = new URL(requestURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            if (cookieHeader != null) {
+                conn.setRequestProperty("Cookie", cookieHeader);
+                String[] parts = cookieHeader.split(";");
+                for (String part : parts) {
+                    if (part.contains("csrf")) {
+                        conn.setRequestProperty("X-CSRFToken", part.split("=")[1]);
+                        break;
+                    }
+                }
+            }
+            conn.setRequestMethod("GET");
+            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(15000);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                // Get response string
+                String line;
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line = br.readLine()) != null) {
+                    response += line;
+                }
+            } else {
+                response = "";
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
 
     @Override
     protected String doInBackground(Data... params) {
+        String method = params[0].getMethod();
         String requestURL = params[0].getRequestURL();
         postDataParams = params[0].getPostDataParams();
 
         if (cookieHeader == null) {
-            getCookieHeader(requestURL);
+            getCookieHeader(getCsrfURL);
         }
-        String response = sendPostRequest(requestURL);
 
-        // TODO: remove
-        //response = testPersonalPage("http://52.38.64.32/main/personal");
+        String response;
+        if (method.equalsIgnoreCase("POST")) {
+            response = sendPostRequest(requestURL);
+        }
+        else {
+            response = sendGetRequest(requestURL);
+        }
 
         return response;
     }

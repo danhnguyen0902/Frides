@@ -11,6 +11,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +57,8 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         initView();
         initListener();
 
+        postDataParams = new HashMap<>();
+
     }
 
 
@@ -85,11 +90,10 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         newRequestFragment = new NewRequestFragment();
 
         fragmentList = new ArrayList<Fragment>();
+        fragmentList.add(newRequestFragment);
+        fragmentList.add(myRideFragment);
         fragmentList.add(rideListFragment);
         fragmentList.add(accountFragment);
-        fragmentList.add(myRideFragment);
-        fragmentList.add(newRequestFragment);
-
 
         mAppSectionsPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             /**
@@ -147,7 +151,7 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
 
                         // TODO: add http requests
                         postDataParams.clear();
-                        Data data = new Data("http://52.38.64.32/main/personal", postDataParams);
+                        Data data = new Data("GET", "http://52.38.64.32/main/personal", postDataParams);
                         myAsyncTask = new MyAsyncTask(RiderActivity.this);
                         myAsyncTask.execute(data);
                         break;
@@ -202,6 +206,15 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
 
     @Override
     public void onSuccessfulExecute(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+
+            // TODO: remove
+            ((AccountFragment)accountFragment).setText(response);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }
 

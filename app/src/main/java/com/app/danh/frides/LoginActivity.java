@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             postDataParams.put("username", loginUsername.getText().toString());
             postDataParams.put("password", loginPassword.getText().toString());
 
-            Data data = new Data("http://52.38.64.32/main/login", postDataParams);
+            Data data = new Data("POST", "http://52.38.64.32/main/login", postDataParams);
             myAsyncTask = new MyAsyncTask(this);
             myAsyncTask.execute(data);
         }
@@ -84,12 +84,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onSuccessfulExecute(String response) {
         tv.setText(response);
-        if (response.compareToIgnoreCase("User is logged in") == 0)
+        if (response.contains("is logged in"))
         {
+            String[] parts = response.split(" ");
             Intent myIntent = new Intent(this, MainActivity.class);
+            myIntent.putExtra("username", parts[0]);
             this.startActivity(myIntent);
         }
-        System.out.println(response);
         successfulLogin = true;
         myAsyncTask.cancel(true);
         myAsyncTask = null;

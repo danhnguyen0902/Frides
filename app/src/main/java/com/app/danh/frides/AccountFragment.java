@@ -51,4 +51,8 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
 
     }
+
+    public void setText(String text) {
+        tv.setText(text);
+    }
 }

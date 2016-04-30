@@ -67,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             postDataParams.put("secret_question", registerSecretQuestion.getText().toString());
             postDataParams.put("secret_answer", registerSecretAnswer.getText().toString());
 
-            Data data = new Data("http://52.38.64.32/main/register", postDataParams);
+            Data data = new Data("POST", "http://52.38.64.32/main/register", postDataParams);
             myAsyncTask = new MyAsyncTask(this);
             myAsyncTask.execute(data);
         }

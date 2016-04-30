@@ -34,7 +34,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
         username = ((EditText) findViewById(R.id.getUsername)).getText().toString();
         postDataParams.clear();
         postDataParams.put("username", username);
-        Data data = new Data("http://52.38.64.32/main/get_secret_question", postDataParams);
+        Data data = new Data("POST", "http://52.38.64.32/main/get_secret_question", postDataParams);
         myAsyncTask = new MyAsyncTask(this);
         myAsyncTask.execute(data);
 
@@ -51,7 +51,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
             postDataParams.clear();
             postDataParams.put("username", username);
             postDataParams.put("answer", passAnswer.getText().toString());
-            Data data = new Data("http://52.38.64.32/main/submit_answer", postDataParams);
+            Data data = new Data("POST", "http://52.38.64.32/main/submit_answer", postDataParams);
             myAsyncTask = new MyAsyncTask(this);
             myAsyncTask.execute(data);
         }
@@ -98,7 +98,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
         postDataParams.put("username", username);
         postDataParams.put("password1", password1.getText().toString());
         postDataParams.put("password2", password2.getText().toString());
-        Data data = new Data("http://52.38.64.32/main/change_password", postDataParams);
+        Data data = new Data("POST", "http://52.38.64.32/main/change_password", postDataParams);
         myAsyncTask = new MyAsyncTask(this);
         myAsyncTask.execute(data);
     }
