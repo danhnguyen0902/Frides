@@ -8,4 +8,28 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.app.danh.frides.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="I am a Rider"
+            android:textSize="36dp"
+            android:id="@+id/mainRider"
+            android:layout_margin="24dp"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="I am a Driver"
+            android:textSize="36dp"
+            android:id="@+id/mainDriver"
+            android:layout_margin="24dp"
+            android:layout_gravity="center"/>
+    </LinearLayout>
 </RelativeLayout>
