@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         postDataParams = new HashMap<>();
 
         tv = (TextView) findViewById(R.id.text);
+        successfulLogin = false;
 
         //-------------TESTING AREA----------------------------------
         testingBttn = (Button) findViewById(R.id.testingRiderBtt);
@@ -79,11 +80,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         //-----------------------------------------------------------
     }
-
+    boolean successfulLogin = false;
     @Override
     public void onSuccessfulExecute(String response) {
         tv.setText(response);
-
+        if (response.compareToIgnoreCase("User is logged in") == 0)
+        {
+            Intent myIntent = new Intent(this, MainActivity.class);
+            this.startActivity(myIntent);
+        }
+        System.out.println(response);
+        successfulLogin = true;
         myAsyncTask.cancel(true);
         myAsyncTask = null;
     }
