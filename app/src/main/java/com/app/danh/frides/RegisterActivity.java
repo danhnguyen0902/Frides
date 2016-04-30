@@ -23,7 +23,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     EditText registerSecretQuestion;
     EditText registerSecretAnswer;
     Button registerBtn;
-    //Button backToLoginBtn;
 
     MyAsyncTask myAsyncTask = null;
     HashMap<String, String> postDataParams;
@@ -43,10 +42,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         registerSecretQuestion = (EditText) findViewById(R.id.registerSecretQuestion);
         registerSecretAnswer = (EditText) findViewById(R.id.registerSecretAnswer);
         registerBtn = (Button) findViewById(R.id.registerBtn);
-        //backToLoginBtn = (Button) findViewById(R.id.backToLoginBtn);
 
         registerBtn.setOnClickListener(this);
-        //backToLoginBtn.setOnClickListener(this);
 
         postDataParams = new HashMap<>();
 
@@ -73,9 +70,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             myAsyncTask = new MyAsyncTask(this);
             myAsyncTask.execute(data);
         }
-//        else if(v.getId() == backToLoginBtn.getId()) {
-//            this.finish();
-//        }
     }
 
     @Override

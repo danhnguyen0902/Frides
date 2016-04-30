@@ -97,7 +97,8 @@ public class MyAsyncTask extends AsyncTask<Data, Integer, String> {
 
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpsURLConnection.HTTP_OK) {
-                // Get cookies and update the cookieHeader only after we LOGGED IN
+                // Get cookies and update the cookieHeader. Django gives us new cookies with the
+                // session id only after we LOGGED IN
                 List<String> cookies = conn.getHeaderFields().get("Set-Cookie");
                 if (cookies != null) {
                     StringBuilder sb = new StringBuilder();

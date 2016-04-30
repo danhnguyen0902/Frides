@@ -54,7 +54,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             myAsyncTask.execute(data);
         }
         else if(v.getId() == forgotPasswordBtn.getId()) {
-
+            Intent myIntent = new Intent(this, ChangePasswordActivity.class);
+            this.startActivity(myIntent);
         }
         else if(v.getId() == registerBtn.getId()) {
             Intent myIntent = new Intent(this, RegisterActivity.class);
