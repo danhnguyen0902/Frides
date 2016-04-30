@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onSuccessfulExecute(String response) {
         tv.setText(response);
-        if (response.compareToIgnoreCase("User is logged in") == 0)
+        if (response.toLowerCase().endsWith(" is logged in"))
         {
             Intent myIntent = new Intent(this, MainActivity.class);
             this.startActivity(myIntent);

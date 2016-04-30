@@ -76,6 +76,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onSuccessfulExecute(String response) {
         tv.setText(response);
+        System.out.println("Response: " + response);
         if (response.compareToIgnoreCase("Account is registered") == 0)
         {
             Intent myIntent = new Intent(this, MainActivity.class);

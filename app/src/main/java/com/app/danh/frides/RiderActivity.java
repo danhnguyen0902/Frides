@@ -81,10 +81,10 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         newRequestFragment = new NewRequestFragment();
 
         fragmentList = new ArrayList<Fragment>();
+        fragmentList.add(newRequestFragment);
+        fragmentList.add(myRideFragment);
         fragmentList.add(rideListFragment);
         fragmentList.add(accountFragment);
-        fragmentList.add(myRideFragment);
-        fragmentList.add(newRequestFragment);
 
 
         mAppSectionsPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
