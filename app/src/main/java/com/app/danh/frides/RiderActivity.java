@@ -12,9 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class RiderActivity extends FragmentActivity implements View.OnClickListener {
+public class RiderActivity extends FragmentActivity implements View.OnClickListener, MyAsyncListener {
 
     FragmentPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -41,6 +42,9 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
     Fragment newRequestFragment;
     Fragment myRideFragment;
     Fragment accountFragment;
+
+    MyAsyncTask myAsyncTask = null;
+    HashMap<String, String> postDataParams;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -140,7 +144,15 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
                         imgButtonAccount.setImageResource(R.mipmap.ic_person_press);
                         txtViewAccount.setTextColor(Color.parseColor("#777777"));
                         topBarText.setText("Account Information");
+
+                        // TODO: add http requests
+                        postDataParams.clear();
+                        Data data = new Data("http://52.38.64.32/main/personal", postDataParams);
+                        myAsyncTask = new MyAsyncTask(RiderActivity.this);
+                        myAsyncTask.execute(data);
+                        break;
                     default:
+                        break;
                 }
             }
         });
@@ -188,6 +200,9 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
     }
 
 
+    @Override
+    public void onSuccessfulExecute(String response) {
+    }
 }
 
 
