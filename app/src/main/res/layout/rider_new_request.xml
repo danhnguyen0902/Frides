@@ -2,7 +2,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <TextView
         android:layout_width="wrap_content"
@@ -38,11 +40,17 @@
         android:layout_height="wrap_content"
         android:id="@+id/newRequestOpenMapButton"
         android:text="Select Location"/>
-
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Contact Info"
         android:id="@+id/newRequestContactInfo"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/postNewRequest"
+        android:text="Post Request"
+        android:background="#0288d1" />
 </LinearLayout>
 

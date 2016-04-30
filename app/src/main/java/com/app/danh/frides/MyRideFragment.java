@@ -1,4 +1,4 @@
-package com.app.danh.frides;
+    package com.app.danh.frides;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

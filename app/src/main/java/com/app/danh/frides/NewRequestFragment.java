@@ -25,6 +25,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
     EditText newRequestSelectDateText;
     EditText newRequestSelectTimeText;
     Button newRequestSelectLocationButton;
+    Button postNewRequest;
 
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
@@ -38,20 +39,26 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
         newRequestSelectDateText = (EditText) view.findViewById(R.id.newRequestSelectDateText);
         newRequestSelectTimeText = (EditText) view.findViewById(R.id.newRequestSelectTimeText);
         newRequestSelectLocationButton = (Button) view.findViewById(R.id.newRequestOpenMapButton);
+        postNewRequest = (Button) view.findViewById(R.id.postNewRequest);
 
         newRequestSelectDateText.setOnFocusChangeListener(this);
         newRequestSelectTimeText.setOnFocusChangeListener(this);
         newRequestSelectDateText.setOnClickListener(this);
         newRequestSelectTimeText.setOnClickListener(this);
         newRequestSelectLocationButton.setOnClickListener(this);
+        postNewRequest.setOnClickListener(this);
 
         calendar = Calendar.getInstance();
         newRequestSelectDateText.setText(calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "-" + calendar.get(Calendar.YEAR));
         String am_pm = "am";
+        String zero = "";
         if(calendar.get(Calendar.AM_PM) == 1) {
             am_pm = "pm";
         }
-        newRequestSelectTimeText.setText(calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE) + " " + am_pm);
+        if(calendar.get(Calendar.MINUTE) < 10) {
+            zero = "0";
+        }
+        newRequestSelectTimeText.setText(calendar.get(Calendar.HOUR) + ":" + zero + calendar.get(Calendar.MINUTE) + " " + am_pm);
         return view;
     }
 
@@ -77,6 +84,9 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
                 e.printStackTrace();
             }
         }
+        else if(v.getId() == postNewRequest.getId()) {
+            //TODO: POST the request to the database
+        }
     }
 
     @Override
@@ -91,7 +101,11 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
             hourOfDay-=12;
             am_pm = "pm";
         }
-        newRequestSelectTimeText.setText(hourOfDay + ":" + minute + " " + am_pm);
+        String zero = "";
+        if(minute < 10) {
+            zero = "0";
+        }
+        newRequestSelectTimeText.setText(hourOfDay + ":" + zero + minute + " " + am_pm);
     }
 
     @Override
