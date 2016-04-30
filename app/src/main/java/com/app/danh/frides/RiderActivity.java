@@ -1,5 +1,6 @@
 package com.app.danh.frides;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,14 +8,26 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlacePicker;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RiderActivity extends FragmentActivity implements View.OnClickListener {
+public class RiderActivity extends FragmentActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+    private GoogleApiClient googleApiClient;
+    int PLACE_PICKER_REQUEST = 1;
 
     FragmentPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -50,6 +63,11 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         initView();
         initListener();
 
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
     }
 
 
@@ -85,7 +103,6 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         fragmentList.add(myRideFragment);
         fragmentList.add(rideListFragment);
         fragmentList.add(accountFragment);
-
 
         mAppSectionsPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             /**
@@ -187,7 +204,21 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         }
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this);
+                String toastMsg = String.format("Place: %s", place.getName());
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 }
 
 
