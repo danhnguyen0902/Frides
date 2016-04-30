@@ -51,6 +51,9 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-idata
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBoQT0wAf_B8qBvQeV85wYspsZEox560J0"/>
 
         <!-- <activity android:name=".GetPasswordActivity"></activity> -->
         <activity android:name=".DriverActivity"></activity>
