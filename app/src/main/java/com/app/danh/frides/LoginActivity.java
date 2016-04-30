@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         postDataParams = new HashMap<>();
 
         tv = (TextView) findViewById(R.id.text);
-        successfulLogin = false;
 
         //-------------TESTING AREA----------------------------------
         testingBttn = (Button) findViewById(R.id.testingRiderBtt);
@@ -54,7 +53,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == loginBtn.getId()) {
+        if (v.getId() == loginBtn.getId()) {
             postDataParams.clear();
             postDataParams.put("username", loginUsername.getText().toString());
             postDataParams.put("password", loginPassword.getText().toString());
@@ -62,37 +61,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Data data = new Data("POST", "http://52.38.64.32/main/login", postDataParams);
             myAsyncTask = new MyAsyncTask(this);
             myAsyncTask.execute(data);
-        }
-        else if(v.getId() == forgotPasswordBtn.getId()) {
+        } else if (v.getId() == forgotPasswordBtn.getId()) {
             Intent myIntent = new Intent(this, ChangePasswordActivity.class);
             this.startActivity(myIntent);
-        }
-        else if(v.getId() == registerBtn.getId()) {
+        } else if (v.getId() == registerBtn.getId()) {
             Intent myIntent = new Intent(this, RegisterActivity.class);
             this.startActivity(myIntent);
         }
 
         //-------------TESTING AREA----------------------------------
-        else if (v.getId() == testingBttn.getId())
-        {
+        else if (v.getId() == testingBttn.getId()) {
             Intent intent = new Intent(this, RiderActivity.class);
             this.startActivity(intent);
         }
         //-----------------------------------------------------------
     }
-    boolean successfulLogin = false;
+
     @Override
     public void onSuccessfulExecute(String response) {
         tv.setText(response);
-        if (response.contains("is logged in"))
-        {
+        myAsyncTask.cancel(true);
+        myAsyncTask = null;
+
+        if (response.contains("is logged in")) {
             String[] parts = response.split(" ");
             Intent myIntent = new Intent(this, MainActivity.class);
             myIntent.putExtra("username", parts[0]);
             this.startActivity(myIntent);
         }
-        successfulLogin = true;
-        myAsyncTask.cancel(true);
-        myAsyncTask = null;
     }
 }

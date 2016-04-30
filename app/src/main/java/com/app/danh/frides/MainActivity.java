@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v.getId() == riderBtn.getId()) {
             Intent intent = new Intent(this, RiderActivity.class);
             this.startActivity(intent);
+        } else if (v.getId() == driverBtn.getId()) {
+            Intent intent = new Intent(this, DriverActivity.class);
+            this.startActivity(intent);
         }
     }
 }

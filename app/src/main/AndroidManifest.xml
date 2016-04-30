@@ -17,16 +17,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".RegisterActivity"
             android:label="@string/app_name"
             android:parentActivityName=".LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LoginActivity"></meta-data>
+                android:value=".LoginActivity" />
         </activity>
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -38,9 +36,8 @@
             android:parentActivityName=".LoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LoginActivity"></meta-data>
+                android:value=".LoginActivity" />
         </activity>
-
         <activity
             android:name=".ChangePasswordActivity"
             android:label="@string/app_name"
@@ -50,11 +47,16 @@
                 android:value=".LoginActivity"></meta-data>
         </activity>
 
-        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <meta-idata
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBoQT0wAf_B8qBvQeV85wYspsZEox560J0"/>
+
+        <!-- <activity android:name=".GetPasswordActivity"></activity> -->
+        <activity android:name=".DriverActivity"></activity>
     </application>
 
 </manifest>
