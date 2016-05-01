@@ -130,15 +130,6 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
             HashMap<String, String> postData = new HashMap<String, String>();
 
             postData.put("title", newRequestTitle.getText().toString());
-//            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-//            Date date = null;
-//            try {
-//                date = format.parse(newRequestSelectDateText.getText().toString());
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//            postData.put("date", date.toString());
-
             String date = newRequestSelectDateText.getText().toString();
             String[] parts = date.split("/");
             date = parts[2] + "-" + parts[0] + "-" + parts[1];
