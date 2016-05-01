@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,7 +48,9 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
     HashMap<String, String> postDataParams;
     User user = null;
 
+    String tab;
     String accountFrag;
+    String rideListFrag;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,7 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
         initListener();
 
         postDataParams = new HashMap<>();
+        tab = "myRideFrag";
     }
 
 
@@ -116,21 +120,35 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
 
             @Override
             public void onPageSelected(int position) {
+                Data data;
                 resetControl();
                 switch (position) {
                     case 0:
+                        tab = "myRideFrag";
+
                         mViewPager.setCurrentItem(0);
                         imgButtonMyRide.setImageResource(R.mipmap.ic_contacts_press);
                         txtViewMyRide.setTextColor(Color.parseColor("#777777"));
                         topBarText.setText("My List");
                         break;
                     case 1:
+                        tab = "rideListFrag";
+
                         mViewPager.setCurrentItem(1);
                         imgButtonRideList.setImageResource(R.mipmap.ic_friends_press);
                         txtViewRideList.setTextColor(Color.parseColor("#777777"));
                         topBarText.setText("Ride List");
+
+                        // Get all ride requests
+                        postDataParams.clear();
+                        data = new Data("GET", "http://52.38.64.32/main/get_all_requests", postDataParams);
+                        myAsyncTask = new MyAsyncTask(DriverActivity.this);
+                        myAsyncTask.execute(data);
+
                         break;
                     case 2:
+                        tab = "accountFrag";
+
                         mViewPager.setCurrentItem(2);
                         imgButtonAccount.setImageResource(R.mipmap.ic_person_press);
                         txtViewAccount.setTextColor(Color.parseColor("#777777"));
@@ -139,7 +157,7 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
                         // Get user's personal information
                         accountFrag = "get info";
                         postDataParams.clear();
-                        Data data = new Data("GET", "http://52.38.64.32/main/personal", postDataParams);
+                        data = new Data("GET", "http://52.38.64.32/main/personal", postDataParams);
                         myAsyncTask = new MyAsyncTask(DriverActivity.this);
                         myAsyncTask.execute(data);
                         break;
@@ -185,27 +203,41 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
 
     @Override
     public void onSuccessfulExecute(String response) {
-        if (accountFrag.equalsIgnoreCase("get info")) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                JSONObject obj = jsonObject.getJSONObject("fields");
-                String username = obj.getString("username");
-                String fName = obj.getString("first_name");
-                String lName = obj.getString("last_name");
-                String email = obj.getString("email");
-                if (email.equalsIgnoreCase("null")) {
-                    email = "";
-                }
-                String secretQuestion = obj.getString("secret_question");
-                String secretAnswer = obj.getString("secret_answer");
+        if (tab.equalsIgnoreCase("accountFrag")) {
+            if (accountFrag.equalsIgnoreCase("get info")) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONObject obj = jsonObject.getJSONObject("fields");
+                    String username = obj.getString("username");
+                    String fName = obj.getString("first_name");
+                    String lName = obj.getString("last_name");
+                    String email = obj.getString("email");
+                    if (email.equalsIgnoreCase("null")) {
+                        email = "";
+                    }
+                    String secretQuestion = obj.getString("secret_question");
+                    String secretAnswer = obj.getString("secret_answer");
 
-                user = new User(username, fName, lName, email, secretQuestion, secretAnswer);
-                ((AccountFragment) accountFragment).updateUI(user);
+                    user = new User(username, fName, lName, email, secretQuestion, secretAnswer);
+                    ((AccountFragment) accountFragment).updateUI(user);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else if (accountFrag.equalsIgnoreCase("update info")) {
+                // Do nothing
+            }
+        }
+        else if (tab.equalsIgnoreCase("rideListFrag")) {
+            try {
+                JSONArray jsonArray = new JSONArray(response);
+                int size = jsonArray.length();
+                ArrayList<JSONObject> requests = new ArrayList<>();
+                for (int i = 0; i < size; i++) {
+                    requests.add(jsonArray.getJSONObject(i));
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (accountFrag.equalsIgnoreCase("update info")) {
-            // Do nothing
         }
 
     }
