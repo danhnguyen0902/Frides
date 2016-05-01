@@ -16,14 +16,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Button loginBtn;
     Button forgotPasswordBtn;
     Button registerBtn;
-    TextView tv;
     static String cookieHeader;
     HashMap<String, String> postDataParams;
     MyAsyncTask myAsyncTask = null;
-
-    //-------------TESTING AREA----------------------------------
-    Button testingBttn;
-    //-----------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +37,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         cookieHeader = null;
         postDataParams = new HashMap<>();
-
-        tv = (TextView) findViewById(R.id.text);
-
-        //-------------TESTING AREA----------------------------------
-        testingBttn = (Button) findViewById(R.id.testingRiderBtt);
-        testingBttn.setOnClickListener(this);
-        //-----------------------------------------------------------
     }
 
     @Override
@@ -68,18 +56,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Intent myIntent = new Intent(this, RegisterActivity.class);
             this.startActivity(myIntent);
         }
-
-        //-------------TESTING AREA----------------------------------
-        else if (v.getId() == testingBttn.getId()) {
-            Intent intent = new Intent(this, RiderActivity.class);
-            this.startActivity(intent);
-        }
-        //-----------------------------------------------------------
     }
 
     @Override
     public void onSuccessfulExecute(String response) {
-        tv.setText(response);
         myAsyncTask.cancel(true);
         myAsyncTask = null;
 

@@ -258,7 +258,7 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
             }
         }
         else if (accountFrag.equalsIgnoreCase("update info")) {
-            ((AccountFragment) accountFragment).setText(response);
+            // Do nothing
         }
 
     }
