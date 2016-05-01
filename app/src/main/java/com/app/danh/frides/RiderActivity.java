@@ -37,24 +37,20 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
     ViewPager mViewPager;
     List<Fragment> fragmentList;
 
-    LinearLayout tabRideList;
     LinearLayout tabRequestRide;
     LinearLayout tabMyRide;
     LinearLayout tabAccount;
 
-    ImageButton imgButtonRideList;
     ImageButton imgButtonRequestRide;
     ImageButton imgButtonMyRide;
     ImageButton imgButtonAccount;
 
-    TextView txtViewRideList;
     TextView txtViewRequestRide;
     TextView txtViewMyRide;
     TextView txtViewAccount;
 
     TextView topBarText;
 
-    Fragment rideListFragment;
     Fragment newRequestFragment;
     Fragment myRideFragment;
     Fragment accountFragment;
@@ -89,22 +85,18 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         //---------------------This for Bottom Bar Control---------------------------
         tabMyRide = (LinearLayout) findViewById(R.id.tab_my_list);
         tabRequestRide = (LinearLayout) findViewById(R.id.tab_new_request);
-        tabRideList = (LinearLayout) findViewById(R.id.tab_list);
         tabAccount = (LinearLayout) findViewById(R.id.tab_account);
 
         imgButtonAccount = (ImageButton) findViewById(R.id.tab_account_img);
         imgButtonMyRide = (ImageButton) findViewById(R.id.tab_my_list_img);
-        imgButtonRideList = (ImageButton) findViewById(R.id.tab_list_img);
         imgButtonRequestRide = (ImageButton) findViewById(R.id.tab_new_request_img);
 
         txtViewAccount = (TextView) findViewById(R.id.tab_account_text);
         txtViewMyRide = (TextView) findViewById(R.id.tab_my_list_text);
         txtViewRequestRide = (TextView) findViewById(R.id.tab_new_request_text);
-        txtViewRideList = (TextView) findViewById(R.id.tab_list_text);
         //---------------------------------------------------------------------------
         topBarText = (TextView) findViewById(R.id.topTitle);
 
-        rideListFragment = new RideListFragment();
         accountFragment = new AccountFragment();
         myRideFragment = new MyRideFragment();
         newRequestFragment = new NewRequestFragment();
@@ -112,7 +104,6 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         fragmentList = new ArrayList<Fragment>();
         fragmentList.add(newRequestFragment);
         fragmentList.add(myRideFragment);
-        fragmentList.add(rideListFragment);
         fragmentList.add(accountFragment);
 
         mAppSectionsPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -159,12 +150,6 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
                         break;
                     case 2:
                         mViewPager.setCurrentItem(2);
-                        imgButtonRideList.setImageResource(R.mipmap.ic_friends_press);
-                        txtViewRideList.setTextColor(Color.parseColor("#777777"));
-                        topBarText.setText("Ride List");
-                        break;
-                    case 3:
-                        mViewPager.setCurrentItem(3);
                         imgButtonAccount.setImageResource(R.mipmap.ic_person_press);
                         txtViewAccount.setTextColor(Color.parseColor("#777777"));
                         topBarText.setText("Account Information");
@@ -186,7 +171,6 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
     private void initListener() {
         tabMyRide.setOnClickListener(this);
         tabRequestRide.setOnClickListener(this);
-        tabRideList.setOnClickListener(this);
         tabAccount.setOnClickListener(this);
     }
 
@@ -194,9 +178,7 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         imgButtonAccount.setImageResource(R.mipmap.ic_person);
         imgButtonRequestRide.setImageResource(R.mipmap.ic_chat);
         imgButtonMyRide.setImageResource(R.mipmap.ic_contact);
-        imgButtonRideList.setImageResource(R.mipmap.ic_friends);
         txtViewAccount.setTextColor(Color.WHITE);
-        txtViewRideList.setTextColor(Color.WHITE);
         txtViewMyRide.setTextColor(Color.WHITE);
         txtViewRequestRide.setTextColor(Color.WHITE);
 
@@ -207,10 +189,6 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         int id = v.getId();
         switch (id) {
             case R.id.tab_account:
-                mViewPager.setCurrentItem(3);
-
-                break;
-            case R.id.tab_list:
                 mViewPager.setCurrentItem(2);
                 break;
             case R.id.tab_my_list:

@@ -23,8 +23,11 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
+import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by Phuong on 4/30/2016.
@@ -127,7 +130,19 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
             HashMap<String, String> postData = new HashMap<String, String>();
 
             postData.put("title", newRequestTitle.getText().toString());
-            postData.put("date", newRequestSelectDateText.getText().toString());
+//            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+//            Date date = null;
+//            try {
+//                date = format.parse(newRequestSelectDateText.getText().toString());
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            postData.put("date", date.toString());
+
+            String date = newRequestSelectDateText.getText().toString();
+            String[] parts = date.split("/");
+            date = parts[2] + "-" + parts[0] + "-" + parts[1];
+            postData.put("date", date);
             postData.put("time", newRequestSelectTimeText.getText().toString());
             if (onlyEmail.isChecked() == false) {
                 postData.put("contact info", newRequestContactInfo.getText().toString());
@@ -136,7 +151,6 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
                 postData.put("only email", "true");
                 postData.put("contact info", "");
             }
-            postData.put("title", newRequestTitle.getText().toString());
 
             for(String str:postData.values())
             {
@@ -145,7 +159,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
 
             //----------------------LACK OF GG MAPS API, HARD CODE A LOCATION----------------------------------------------------
             postData.put("location", "37.2541066,-80.4138788");
-            Data data = new Data("POST", "http://52.38.64.32/main/register", postData);
+            Data data = new Data("POST", "http://52.38.64.32/main/submit_request", postData);
             myAsyncTask = new MyAsyncTask(this);
             myAsyncTask.execute(data);
 
