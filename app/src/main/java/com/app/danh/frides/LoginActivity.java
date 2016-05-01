@@ -16,7 +16,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Button loginBtn;
     Button forgotPasswordBtn;
     Button registerBtn;
-    TextView tv;
     static String cookieHeader;
     HashMap<String, String> postDataParams;
     MyAsyncTask myAsyncTask = null;
@@ -38,8 +37,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         cookieHeader = null;
         postDataParams = new HashMap<>();
-
-        tv = (TextView) findViewById(R.id.text);
     }
 
     @Override
@@ -63,7 +60,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onSuccessfulExecute(String response) {
-        tv.setText(response);
         myAsyncTask.cancel(true);
         myAsyncTask = null;
 

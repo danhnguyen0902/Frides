@@ -75,9 +75,4 @@
         android:text="Update Account"
         android:id="@+id/updateBtn"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Initial Text"
-        android:id="@+id/text"/>
 </LinearLayout>

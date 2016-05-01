@@ -29,8 +29,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     Button updateBtn;
     OnFragmentListener fragmentListener;
 
-    TextView tv;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,8 +45,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         secretAnswer = (EditText) view.findViewById(R.id.secretAnswer);
         updateBtn = (Button) view.findViewById(R.id.updateBtn);
         updateBtn.setOnClickListener(this);
-
-        tv = (TextView) view.findViewById(R.id.text);
 
         return view;
     }
@@ -96,10 +92,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         email.setText(user.getEmail());
         secretQuestion.setText(user.getSecretQuestion());
         secretAnswer.setText(user.getSecretAnswer());
-    }
-
-    public void setText(String text) {
-        tv.setText(text);
     }
 
     /**

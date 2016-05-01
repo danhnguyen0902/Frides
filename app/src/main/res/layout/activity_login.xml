@@ -65,10 +65,4 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Register" />
-
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Initial Text" />
 </LinearLayout>

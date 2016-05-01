@@ -205,7 +205,7 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
                 e.printStackTrace();
             }
         } else if (accountFrag.equalsIgnoreCase("update info")) {
-            ((AccountFragment) accountFragment).setText(response);
+            // Do nothing
         }
 
     }
