@@ -21,10 +21,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     HashMap<String, String> postDataParams;
     MyAsyncTask myAsyncTask = null;
 
-    //-------------TESTING AREA----------------------------------
-    Button testingBttn;
-    //-----------------------------------------------------------
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,11 +40,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         postDataParams = new HashMap<>();
 
         tv = (TextView) findViewById(R.id.text);
-
-        //-------------TESTING AREA----------------------------------
-        testingBttn = (Button) findViewById(R.id.testingRiderBtt);
-        testingBttn.setOnClickListener(this);
-        //-----------------------------------------------------------
     }
 
     @Override
@@ -68,13 +59,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Intent myIntent = new Intent(this, RegisterActivity.class);
             this.startActivity(myIntent);
         }
-
-        //-------------TESTING AREA----------------------------------
-        else if (v.getId() == testingBttn.getId()) {
-            Intent intent = new Intent(this, RiderActivity.class);
-            this.startActivity(intent);
-        }
-        //-----------------------------------------------------------
     }
 
     @Override
