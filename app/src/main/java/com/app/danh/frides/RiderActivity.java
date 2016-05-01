@@ -22,6 +22,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,6 +62,8 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
 
     String accountFrag;
 
+    String tab;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +78,8 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(this, this)
                 .build();
+
+        tab = "newRequestFrag";
     }
 
 
@@ -134,21 +139,34 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
 
             @Override
             public void onPageSelected(int position) {
+                Data data;
                 resetControl();
                 switch (position) {
                     case 0:
+                        tab = "newRequestFrag";
+
                         mViewPager.setCurrentItem(0);
                         imgButtonRequestRide.setImageResource(R.mipmap.ic_chat_press);
                         txtViewRequestRide.setTextColor(Color.parseColor("#777777"));
                         topBarText.setText("New Request");
                         break;
                     case 1:
+                        tab = "myRideFrag";
+
                         mViewPager.setCurrentItem(1);
                         imgButtonMyRide.setImageResource(R.mipmap.ic_contacts_press);
                         txtViewMyRide.setTextColor(Color.parseColor("#777777"));
                         topBarText.setText("My Request");
+
+                        // Get user's ride requests
+                        postDataParams.clear();
+                        data = new Data("GET", "http://52.38.64.32/main/get_user_requests", postDataParams);
+                        myAsyncTask = new MyAsyncTask(RiderActivity.this);
+                        myAsyncTask.execute(data);
                         break;
                     case 2:
+                        tab = "accountFrag";
+
                         mViewPager.setCurrentItem(2);
                         imgButtonAccount.setImageResource(R.mipmap.ic_person_press);
                         txtViewAccount.setTextColor(Color.parseColor("#777777"));
@@ -157,7 +175,7 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
                         // Get user's personal information
                         accountFrag = "get info";
                         postDataParams.clear();
-                        Data data = new Data("GET", "http://52.38.64.32/main/personal", postDataParams);
+                        data = new Data("GET", "http://52.38.64.32/main/personal", postDataParams);
                         myAsyncTask = new MyAsyncTask(RiderActivity.this);
                         myAsyncTask.execute(data);
                         break;
@@ -212,33 +230,45 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         }
     }
 
-
     @Override
     public void onSuccessfulExecute(String response) {
-        if (accountFrag.equalsIgnoreCase("get info")) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                JSONObject obj = jsonObject.getJSONObject("fields");
-                String username = obj.getString("username");
-                String fName = obj.getString("first_name");
-                String lName = obj.getString("last_name");
-                String email = obj.getString("email");
-                if (email.equalsIgnoreCase("null")) {
-                    email = "";
-                }
-                String secretQuestion = obj.getString("secret_question");
-                String secretAnswer = obj.getString("secret_answer");
+        if (tab.equalsIgnoreCase("accountFrag")) {
+            if (accountFrag.equalsIgnoreCase("get info")) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONObject obj = jsonObject.getJSONObject("fields");
+                    String username = obj.getString("username");
+                    String fName = obj.getString("first_name");
+                    String lName = obj.getString("last_name");
+                    String email = obj.getString("email");
+                    if (email.equalsIgnoreCase("null")) {
+                        email = "";
+                    }
+                    String secretQuestion = obj.getString("secret_question");
+                    String secretAnswer = obj.getString("secret_answer");
 
-                user = new User(username, fName, lName, email, secretQuestion, secretAnswer);
-                ((AccountFragment) accountFragment).updateUI(user);
+                    user = new User(username, fName, lName, email, secretQuestion, secretAnswer);
+                    ((AccountFragment) accountFragment).updateUI(user);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else if (accountFrag.equalsIgnoreCase("update info")) {
+                // Do nothing
+            }
+        }
+        else if (tab.equalsIgnoreCase("myRideFrag")) {
+            JSONArray jsonArray = null;
+            try {
+                jsonArray = new JSONArray(response);
+                int size = jsonArray.length();
+                ArrayList<JSONObject> requests = new ArrayList<>();
+                for (int i = 0; i < size; i++) {
+                    requests.add(jsonArray.getJSONObject(i));
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        else if (accountFrag.equalsIgnoreCase("update info")) {
-            // Do nothing
-        }
-
     }
 
     public void onConnectionFailed(ConnectionResult connectionResult) {

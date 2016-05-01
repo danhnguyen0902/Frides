@@ -228,8 +228,9 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
             }
         }
         else if (tab.equalsIgnoreCase("rideListFrag")) {
+            JSONArray jsonArray = null;
             try {
-                JSONArray jsonArray = new JSONArray(response);
+                jsonArray = new JSONArray(response);
                 int size = jsonArray.length();
                 ArrayList<JSONObject> requests = new ArrayList<>();
                 for (int i = 0; i < size; i++) {
