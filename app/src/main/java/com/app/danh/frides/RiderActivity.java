@@ -270,7 +270,8 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         } else if (tab.equalsIgnoreCase("newRequestFrag")) {
-
+            ((NewRequestFragment)newRequestFragment).resetForm();
+            ((NewRequestFragment)newRequestFragment).popToast("Your ride has been posted");
 
         }
     }

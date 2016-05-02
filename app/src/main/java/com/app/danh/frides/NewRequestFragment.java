@@ -191,7 +191,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
         fragmentListener = null;
     }
 
-    private void resetForm() {
+    public void resetForm() {
         newRequestContactInfo.setText("");
         newRequestTitle.setText("");
         onlyEmail.setChecked(false);
@@ -199,7 +199,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
         newRequestSelectTimeText.setText("");
     }
 
-    private void popToast(String str) {
+    public void popToast(String str) {
         Context context = this.getContext();//getApplicationContext();
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, str, duration);
