@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -47,7 +49,6 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
     ImageButton imgButtonAccount;
 
     TextView txtViewRequestRide;
-    TextView txtViewMyRide;
     TextView txtViewAccount;
 
     TextView topBarText;
@@ -63,6 +64,8 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
     String accountFrag;
 
     String tab;
+
+    ArrayList<JSONObject> riderRequestsList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,13 +100,14 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         imgButtonRequestRide = (ImageButton) findViewById(R.id.tab_new_request_img);
 
         txtViewAccount = (TextView) findViewById(R.id.tab_account_text);
-        txtViewMyRide = (TextView) findViewById(R.id.tab_my_list_text);
         txtViewRequestRide = (TextView) findViewById(R.id.tab_new_request_text);
         //---------------------------------------------------------------------------
         topBarText = (TextView) findViewById(R.id.topTitle);
 
+        riderRequestsList = new ArrayList<>();
+
         accountFragment = new AccountFragment();
-        myRideFragment = new MyRideFragment();
+        myRideFragment = new RideListFragment();
         newRequestFragment = new NewRequestFragment();
 
         fragmentList = new ArrayList<Fragment>();
@@ -155,8 +159,7 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
 
                         mViewPager.setCurrentItem(1);
                         imgButtonMyRide.setImageResource(R.mipmap.ic_contacts_press);
-                        txtViewMyRide.setTextColor(Color.parseColor("#777777"));
-                        topBarText.setText("My Request");
+                        topBarText.setText("My Requests");
 
                         // Get user's ride requests
                         postDataParams.clear();
@@ -197,9 +200,7 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         imgButtonRequestRide.setImageResource(R.mipmap.ic_chat);
         imgButtonMyRide.setImageResource(R.mipmap.ic_contact);
         txtViewAccount.setTextColor(Color.WHITE);
-        txtViewMyRide.setTextColor(Color.WHITE);
         txtViewRequestRide.setTextColor(Color.WHITE);
-
     }
 
     @Override
@@ -258,14 +259,17 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
         }
         else if (tab.equalsIgnoreCase("myRideFrag")) {
             // URL: get_user_requests
+            System.out.println("RIDE LIST RESPONSE: " + response.toString());
             JSONArray jsonArray = null;
             try {
                 jsonArray = new JSONArray(response);
                 int size = jsonArray.length();
-                ArrayList<JSONObject> requests = new ArrayList<>();
+                riderRequestsList.clear();
                 for (int i = 0; i < size; i++) {
-                    requests.add(jsonArray.getJSONObject(i));
+                    riderRequestsList.add(jsonArray.getJSONObject(i));
                 }
+                System.out.println("REPSONSE SIZE: " + riderRequestsList.size());
+                ((ArrayAdapter) ((ListFragment) myRideFragment).getListAdapter()).notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

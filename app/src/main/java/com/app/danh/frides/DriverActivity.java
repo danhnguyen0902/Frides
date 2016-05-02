@@ -1,5 +1,6 @@
 package com.app.danh.frides;
 
+import android.app.ListFragment;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -83,7 +84,7 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
         //---------------------------------------------------------------------------
         topBarText = (TextView) findViewById(R.id.topTitle);
 
-        rideListFragment = new RideListFragment();
+        rideListFragment = (Fragment) new RideListFragment();
         accountFragment = new AccountFragment();
         myRideFragment = new MyRideFragment();
 
