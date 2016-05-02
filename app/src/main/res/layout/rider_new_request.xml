@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/newRequestSelectDateText"
-        android:hint="dd-MM-yyyy"/>
+        android:hint="yyyy-mm-dd"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/newRequestSelectTimeText"
-        android:hint="HH:MM"/>
+        android:hint="hh:mm"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -84,7 +84,7 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
         //---------------------------------------------------------------------------
         topBarText = (TextView) findViewById(R.id.topTitle);
 
-        rideListFragment = (Fragment) new RideListFragment();
+        rideListFragment = new DriveListFragment();
         accountFragment = new AccountFragment();
         myRideFragment = new MyRideFragment();
 
@@ -229,6 +229,7 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
             }
         }
         else if (tab.equalsIgnoreCase("rideListFrag")) {
+            // URL: get_all_requests
             JSONArray jsonArray = null;
             try {
                 jsonArray = new JSONArray(response);
