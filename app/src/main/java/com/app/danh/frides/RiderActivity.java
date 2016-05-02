@@ -254,6 +254,7 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
                 // Do nothing
             }
         } else if (tab.equalsIgnoreCase("myRideFrag")) {
+            // URL: get_user_requests
             System.out.println("RIDE LIST RESPONSE: " + response.toString());
             JSONArray jsonArray = null;
             try {
