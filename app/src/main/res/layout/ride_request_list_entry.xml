@@ -53,16 +53,16 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text=" Requester: "
         android:id="@+id/textView7"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/rideListTitle" />
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/rideListRequester"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/textView7" />
+        android:layout_toEndOf="@+id/textView7"
+        android:layout_alignTop="@+id/textView7" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -104,7 +104,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Contact Info: "
         android:id="@+id/textView13"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/textView7"
         android:layout_alignParentStart="true" />
 
     <TextView
