@@ -82,7 +82,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
 
         calendar = Calendar.getInstance();
         newRequestSelectDateText.setText(calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.YEAR));
-        newRequestSelectTimeText.setText(calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE) + ":00");
+        newRequestSelectTimeText.setText(calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":00");
         return view;
     }
     PlacePicker.IntentBuilder intentBuilder;
