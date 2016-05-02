@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +48,6 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
 
     MyAsyncTask myAsyncTask;
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rider_new_request, container, false);
@@ -202,7 +200,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
 
     }
 
-    private void  resetForm(){
+    private void resetForm(){
         newRequestContactInfo.setText("");
         newRequestTitle.setText("");
         onlyEmail.setChecked(false);

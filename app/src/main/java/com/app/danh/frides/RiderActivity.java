@@ -257,6 +257,7 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
             }
         }
         else if (tab.equalsIgnoreCase("myRideFrag")) {
+            // URL: get_user_requests
             JSONArray jsonArray = null;
             try {
                 jsonArray = new JSONArray(response);
