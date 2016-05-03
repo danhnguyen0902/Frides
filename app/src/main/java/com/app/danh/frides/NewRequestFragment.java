@@ -17,21 +17,17 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
-import java.text.ParseException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.text.SimpleDateFormat;
 
 /**
  * Created by Phuong on 4/30/2016.
  */
-public class NewRequestFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, View.OnFocusChangeListener, TimePickerDialog.OnTimeSetListener, OnMyAsyncListener {
+public class NewRequestFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, View.OnFocusChangeListener, TimePickerDialog.OnTimeSetListener {
     EditText newRequestTitle;
     EditText newRequestSelectDateText;
     EditText newRequestSelectTimeText;
@@ -39,12 +35,15 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
     Button newRequestSelectLocationButton;
     Button postNewRequest;
     CheckBox onlyEmail;
+
+
     String locationLatLong;
 
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
 
     private Calendar calendar;
+    AccountFragment.OnFragmentListener fragmentListener;
 
     MyAsyncTask myAsyncTask;
 
@@ -83,8 +82,10 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
 
         return view;
     }
+
     PlacePicker.IntentBuilder intentBuilder;
     Intent ggMapIntent;
+
     @Override
     public void onClick(View v) {
         if (v.getId() == newRequestSelectDateText.getId()) {
@@ -96,71 +97,46 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
             timePickerDialog = new TimePickerDialog(getContext(), this, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
             timePickerDialog.show();
         } else if (v.getId() == newRequestSelectLocationButton.getId()) {
-            try {
-                intentBuilder = new PlacePicker.IntentBuilder();
-                ggMapIntent = intentBuilder.build(getActivity());
-                // Start the Intent by requesting a result, identified by a request code.
-                startActivityForResult(ggMapIntent, ((RiderActivity) getActivity()).PLACE_PICKER_REQUEST);
-//                startActivityForResult(intentBuilder.build(getActivity()), ((RiderActivity) getActivity()).PLACE_PICKER_REQUEST);
-            } catch (GooglePlayServicesRepairableException e) {
-                e.printStackTrace();
-            } catch (GooglePlayServicesNotAvailableException e) {
-                e.printStackTrace();
-            }
+            fragmentListener.onButtonClicked(null);
         } else if (v.getId() == postNewRequest.getId()) {
-            if (newRequestTitle.getText().toString().isEmpty()){
-                popToast("Empty Title");
+            if (newRequestTitle.getText().toString().isEmpty()) {
+                popToast("Please enter the title!");
                 return;
             }
-            if (newRequestContactInfo.getText().toString().isEmpty() && onlyEmail.isChecked() == false)
-            {
-                popToast("Empty Contact Info");
+            if (newRequestSelectDateText.getText().toString().isEmpty()) {
+                popToast("Please enter the date!");
                 return;
             }
-//            if (locationLatLong.isEmpty())
-//            {
-//                popToast("Empty location");
-//                return;
-//            }
-
-
-            //TODO: POST the request to the database
-            HashMap<String, String> postData = new HashMap<String, String>();
-
-            postData.put("title", newRequestTitle.getText().toString());
-            postData.put("date", newRequestSelectDateText.getText().toString());
-            postData.put("time", newRequestSelectTimeText.getText().toString());
-            if (onlyEmail.isChecked() == false) {
-                postData.put("contact info", newRequestContactInfo.getText().toString());
-                postData.put("only email", "false");
-            } else {
-                postData.put("only email", "true");
-                postData.put("contact info", "");
+            if (newRequestSelectTimeText.getText().toString().isEmpty()) {
+                popToast("Please enter the time!");
+                return;
             }
-
-            for(String str:postData.values())
-            {
-                System.out.println(str);
+            if (newRequestContactInfo.getText().toString().isEmpty() && onlyEmail.isChecked() == false) {
+                popToast("Please enter Contact Info!");
+                return;
             }
-
-            //----------------------LACK OF GG MAPS API, HARD CODE A LOCATION----------------------------------------------------
-            postData.put("location", "37.2541066,-80.4138788");
-            Data data = new Data("POST", "http://52.38.64.32/main/submit_request", postData);
-            myAsyncTask = new MyAsyncTask(this);
-            myAsyncTask.execute(data);
-
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("In On activity Result");
-        if (requestCode == ((RiderActivity) getActivity()).PLACE_PICKER_REQUEST) {
-            if (resultCode == ((RiderActivity) getActivity()).RESULT_OK) {
-                System.out.println("IIn Result OK");
-                final Place place = PlacePicker.getPlace(data, getActivity());
-                locationLatLong = place.getLatLng().latitude + "," +place.getLatLng().longitude;
+            if (locationLatLong.isEmpty()) {
+                popToast("Please enter location");
+                return;
             }
+            JSONObject postData = new JSONObject();
+            try {
+                postData.put("title", newRequestTitle.getText().toString());
+                postData.put("date", newRequestSelectDateText.getText().toString());
+                postData.put("time", newRequestSelectTimeText.getText().toString());
+                if (onlyEmail.isChecked() == false) {
+                    postData.put("contact info", newRequestContactInfo.getText().toString());
+                    postData.put("only email", "false");
+                } else {
+                    postData.put("only email", "true");
+                    postData.put("contact info", "");
+                }
+                postData.put("location", locationLatLong);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            fragmentListener.onButtonClicked(postData);
         }
     }
 
@@ -171,10 +147,10 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
         if (minute < 10) {
             newRequestSelectTimeText.setText(hourOfDay + ":0" + minute);
-        }
-        else {
+        } else {
             newRequestSelectTimeText.setText(hourOfDay + ":" + minute);
         }
     }
@@ -193,28 +169,44 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public void onSuccessfulExecute(String response) {
-        if (response.compareToIgnoreCase("Ride request is successfully submitted!") == 0)
-        {
-            popToast("Successfully Posted!");
-            resetForm();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof AccountFragment.OnFragmentListener) {
+            fragmentListener = (AccountFragment.OnFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentListener");
         }
-        myAsyncTask.cancel(true);
-        myAsyncTask = null;
-
     }
 
-    private void resetForm(){
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        fragmentListener = null;
+    }
+
+    public void resetForm() {
         newRequestContactInfo.setText("");
         newRequestTitle.setText("");
         onlyEmail.setChecked(false);
         newRequestSelectDateText.setText("");
         newRequestSelectTimeText.setText("");
     }
-    private void popToast(String str) {
+
+    public void popToast(String str) {
         Context context = this.getContext();//getApplicationContext();
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, str, duration);
         toast.show();
     }
+
+    public String getLocationLatLong() {
+        return locationLatLong;
+    }
+
+    public void setLocationLatLong(String locationLatLong) {
+        this.locationLatLong = locationLatLong;
+    }
+
 }

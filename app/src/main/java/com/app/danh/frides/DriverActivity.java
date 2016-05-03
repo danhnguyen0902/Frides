@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,6 +54,8 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
     String accountFrag;
     String rideListFrag;
 
+    ArrayList<JSONObject> requestsList;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +88,7 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
         topBarText = (TextView) findViewById(R.id.topTitle);
 
         rideListFragment = new DriveListFragment();
+        requestsList = new ArrayList<>();
         accountFragment = new AccountFragment();
         myRideFragment = new MyRideFragment();
 
@@ -234,10 +238,11 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
             try {
                 jsonArray = new JSONArray(response);
                 int size = jsonArray.length();
-                ArrayList<JSONObject> requests = new ArrayList<>();
+                requestsList.clear();
                 for (int i = 0; i < size; i++) {
-                    requests.add(jsonArray.getJSONObject(i));
+                    requestsList.add(jsonArray.getJSONObject(i));
                 }
+                ((ArrayAdapter) ((android.support.v4.app.ListFragment) rideListFragment).getListAdapter()).notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
