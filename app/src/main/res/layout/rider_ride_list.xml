@@ -5,13 +5,6 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Ride List"
-        android:textSize="30dp" />
-
-    <TextView
         android:layout_gravity="center"
         android:text="No Requests."
         android:id="@android:id/empty"

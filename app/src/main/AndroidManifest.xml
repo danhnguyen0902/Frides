@@ -58,6 +58,15 @@
                 android:value=".LoginActivity"></meta-data>
         </activity>
 
+        <activity
+            android:name=".EditRequestActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".RiderActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".RiderActivity"></meta-data>
+        </activity>
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
