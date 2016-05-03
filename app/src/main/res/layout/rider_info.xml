@@ -4,6 +4,9 @@
     android:layout_height="match_parent">
 
     <ScrollView
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -89,7 +92,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Update Account"
-                android:id="@+id/updateBtn"/>
+                android:id="@+id/updateBtn"
+                android:layout_gravity="center"
+                android:textSize="18dp"
+                android:layout_marginBottom="20dp"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
