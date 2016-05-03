@@ -18,13 +18,13 @@ import java.util.HashMap;
 /**
  * Created by Danh on 5/3/2016.
  */
-public class ShowRequestActivity extends AppCompatActivity implements View.OnClickListener,
+public class DriveCancelRequestActivity extends AppCompatActivity implements View.OnClickListener,
         OnMyAsyncListener {
     EditText title;
     EditText date;
     EditText time;
     EditText contactInfo;
-    Button takeBtn;
+    Button cancelBtn;
     String locationLatLong;
     TextView locationTxtView;
 
@@ -34,7 +34,7 @@ public class ShowRequestActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.driver_show_request);
+        setContentView(R.layout.driver_cancel_request);
 
         Intent intent = getIntent();
         String jsonString = intent.getStringExtra("item");
@@ -48,12 +48,12 @@ public class ShowRequestActivity extends AppCompatActivity implements View.OnCli
         title = (EditText) findViewById(R.id.title);
         date = (EditText) findViewById(R.id.date);
         time = (EditText) findViewById(R.id.time);
-        takeBtn = (Button) findViewById(R.id.takeBtn);
+        cancelBtn = (Button) findViewById(R.id.cancelBtn);
         contactInfo = (EditText) findViewById(R.id.contactInfo);
         locationTxtView = (TextView) findViewById(R.id.locationTextView);
         locationLatLong = "";
 
-        takeBtn.setOnClickListener(this);
+        cancelBtn.setOnClickListener(this);
 
         try {
             JSONObject data = jsonObj.getJSONObject("fields");
@@ -70,15 +70,15 @@ public class ShowRequestActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == takeBtn.getId()) {
+        if (v.getId() == cancelBtn.getId()) {
             HashMap<String, String> postData = new HashMap<>();
-             try {
+            try {
                 postData.put("pk", String.valueOf(jsonObj.getInt("pk")));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            Data data = new Data("POST", "http://52.38.64.32/main/accept_request", postData);
+            Data data = new Data("POST", "http://52.38.64.32/main/cancel_request", postData);
             myAsyncTask = new MyAsyncTask(this);
             myAsyncTask.execute(data);
         }
@@ -86,8 +86,8 @@ public class ShowRequestActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onSuccessfulExecute(String response) {
-        if (response.compareToIgnoreCase("Ride request is successfully accepted!") == 0) {
-            popToast("Successfully Accepted the Request!");
+        if (response.compareToIgnoreCase("Ride request is successfully cancelled!") == 0) {
+            popToast("Successfully Cancelled the Request!");
         }
         myAsyncTask.cancel(true);
         myAsyncTask = null;

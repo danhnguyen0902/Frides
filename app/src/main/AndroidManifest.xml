@@ -59,7 +59,7 @@
         </activity>
 
         <activity
-            android:name=".EditRequestActivity"
+            android:name=".RideEditRequestActivity"
             android:label="@string/app_name"
             android:parentActivityName=".RiderActivity">
             <meta-data
@@ -68,7 +68,16 @@
         </activity>
 
         <activity
-            android:name=".ShowRequestActivity"
+            android:name=".DriveShowRequestActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".DriverActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DriverActivity"></meta-data>
+        </activity>
+
+        <activity
+            android:name=".DriveCancelRequestActivity"
             android:label="@string/app_name"
             android:parentActivityName=".DriverActivity">
             <meta-data

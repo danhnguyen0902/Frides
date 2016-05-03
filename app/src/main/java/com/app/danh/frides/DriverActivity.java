@@ -1,6 +1,5 @@
 package com.app.danh.frides;
 
-import android.app.ListFragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
@@ -25,7 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DriverActivity extends FragmentActivity implements View.OnClickListener,
-        OnMyAsyncListener, AccountFragment.OnFragmentListener, DriveListFragment.OnFragmentListener {
+        OnMyAsyncListener, AccountFragment.OnFragmentListener, DriveListFragment.OnFragmentListener,
+        DriveMyRideFragment.OnFragmentListener {
     FragmentPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
     List<Fragment> fragmentList;
@@ -54,7 +54,6 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
 
     String tab;
     String accountFrag;
-    String rideListFrag;
 
     ArrayList<JSONObject> requestsList;
 
@@ -68,6 +67,12 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
 
         postDataParams = new HashMap<>();
         tab = "myRideFrag";
+
+        // Initialize first tab: Get all ride requests accepted by the driver
+        postDataParams.clear();
+        Data data = new Data("GET", "http://52.38.64.32/main/get_accepted_requests", postDataParams);
+        myAsyncTask = new MyAsyncTask(DriverActivity.this);
+        myAsyncTask.execute(data);
     }
 
 
@@ -92,7 +97,7 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
         rideListFragment = new DriveListFragment();
         requestsList = new ArrayList<>();
         accountFragment = new AccountFragment();
-        myRideFragment = new MyRideFragment();
+        myRideFragment = new DriveMyRideFragment();
 
         fragmentList = new ArrayList<Fragment>();
         fragmentList.add(myRideFragment);
@@ -137,6 +142,13 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
                         imgButtonMyRide.setImageResource(R.mipmap.ic_contacts_press);
                         txtViewMyRide.setTextColor(Color.parseColor("#777777"));
                         topBarText.setText("My List");
+
+                        // Get all ride requests accepted by the driver
+                        postDataParams.clear();
+                        data = new Data("GET", "http://52.38.64.32/main/get_accepted_requests", postDataParams);
+                        myAsyncTask = new MyAsyncTask(DriverActivity.this);
+                        myAsyncTask.execute(data);
+
                         break;
                     case 1:
                         tab = "rideListFrag";
@@ -146,7 +158,7 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
                         txtViewRideList.setTextColor(Color.parseColor("#777777"));
                         topBarText.setText("Ride List");
 
-                        // Get all ride requests
+                        // Get all open ride requests
                         postDataParams.clear();
                         data = new Data("GET", "http://52.38.64.32/main/get_open_requests", postDataParams);
                         myAsyncTask = new MyAsyncTask(DriverActivity.this);
@@ -235,8 +247,8 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
             }
         }
         else if (tab.equalsIgnoreCase("rideListFrag")) {
-            // URL: get_all_requests
-            JSONArray jsonArray = null;
+            // URL: get_open_requests
+            JSONArray jsonArray;
             try {
                 jsonArray = new JSONArray(response);
                 int size = jsonArray.length();
@@ -249,7 +261,21 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
                 e.printStackTrace();
             }
         }
-
+        else if (tab.equalsIgnoreCase("myRideFrag")) {
+            // URL: get_accepted_requests
+            JSONArray jsonArray;
+            try {
+                jsonArray = new JSONArray(response);
+                int size = jsonArray.length();
+                requestsList.clear();
+                for (int i = 0; i < size; i++) {
+                    requestsList.add(jsonArray.getJSONObject(i));
+                }
+                ((ArrayAdapter) ((android.support.v4.app.ListFragment) myRideFragment).getListAdapter()).notifyDataSetChanged();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -276,9 +302,19 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
         myAsyncTask.execute(data);
     }
 
+    // DriveListFragment.java
     @Override
     public void onItemClicked(JSONObject obj) {
-        Intent intent = new Intent(this, ShowRequestActivity.class);
+        Intent intent = new Intent(this, DriveShowRequestActivity.class);
+
+        intent.putExtra("item", obj.toString());
+        this.startActivity(intent);
+    }
+
+    // DriveMyRideFragment.java
+    @Override
+    public void onItemSelected(JSONObject obj) {
+        Intent intent = new Intent(this, DriveCancelRequestActivity.class);
 
         intent.putExtra("item", obj.toString());
         this.startActivity(intent);

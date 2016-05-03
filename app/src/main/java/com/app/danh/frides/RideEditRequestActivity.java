@@ -30,7 +30,7 @@ import java.util.HashMap;
 /**
  * Created by Danh on 5/3/2016.
  */
-public class EditRequestActivity extends AppCompatActivity implements View.OnClickListener,
+public class RideEditRequestActivity extends AppCompatActivity implements View.OnClickListener,
         DatePickerDialog.OnDateSetListener, View.OnFocusChangeListener,
         TimePickerDialog.OnTimeSetListener, OnMyAsyncListener {
     int PLACE_PICKER_REQUEST = 1;

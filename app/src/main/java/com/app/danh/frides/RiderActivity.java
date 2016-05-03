@@ -342,7 +342,7 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
 
     @Override
     public void onItemClicked(JSONObject obj) {
-        Intent intent = new Intent(this, EditRequestActivity.class);
+        Intent intent = new Intent(this, RideEditRequestActivity.class);
 
         intent.putExtra("item", obj.toString());
         this.startActivity(intent);
