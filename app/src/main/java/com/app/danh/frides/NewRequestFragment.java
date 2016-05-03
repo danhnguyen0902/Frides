@@ -17,8 +17,6 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
 import org.json.JSONException;
@@ -37,6 +35,8 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
     Button newRequestSelectLocationButton;
     Button postNewRequest;
     CheckBox onlyEmail;
+
+
     String locationLatLong;
 
     private DatePickerDialog datePickerDialog;
@@ -97,31 +97,28 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
             timePickerDialog = new TimePickerDialog(getContext(), this, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
             timePickerDialog.show();
         } else if (v.getId() == newRequestSelectLocationButton.getId()) {
-            try {
-                intentBuilder = new PlacePicker.IntentBuilder();
-                ggMapIntent = intentBuilder.build(getActivity());
-                // Start the Intent by requesting a result, identified by a request code.
-                startActivityForResult(ggMapIntent, ((RiderActivity) getActivity()).PLACE_PICKER_REQUEST);
-//                startActivityForResult(intentBuilder.build(getActivity()), ((RiderActivity) getActivity()).PLACE_PICKER_REQUEST);
-            } catch (GooglePlayServicesRepairableException e) {
-                e.printStackTrace();
-            } catch (GooglePlayServicesNotAvailableException e) {
-                e.printStackTrace();
-            }
+            fragmentListener.onButtonClicked(null);
         } else if (v.getId() == postNewRequest.getId()) {
             if (newRequestTitle.getText().toString().isEmpty()) {
-                popToast("Empty Title");
+                popToast("Please enter the title!");
+                return;
+            }
+            if (newRequestSelectDateText.getText().toString().isEmpty()) {
+                popToast("Please enter the date!");
+                return;
+            }
+            if (newRequestSelectTimeText.getText().toString().isEmpty()) {
+                popToast("Please enter the time!");
                 return;
             }
             if (newRequestContactInfo.getText().toString().isEmpty() && onlyEmail.isChecked() == false) {
-                popToast("Empty Contact Info");
+                popToast("Please enter Contact Info!");
                 return;
             }
-//            if (locationLatLong.isEmpty())
-//            {
-//                popToast("Empty location");
-//                return;
-//            }
+            if (locationLatLong.isEmpty()) {
+                popToast("Please enter location");
+                return;
+            }
             JSONObject postData = new JSONObject();
             try {
                 postData.put("title", newRequestTitle.getText().toString());
@@ -134,8 +131,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
                     postData.put("only email", "true");
                     postData.put("contact info", "");
                 }
-                //----------------------LACK OF GG MAPS API, HARD CODE A LOCATION----------------------------------------------------
-                postData.put("location", "37.2541066,-80.4138788");
+                postData.put("location", locationLatLong);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -154,8 +150,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
 
         if (minute < 10) {
             newRequestSelectTimeText.setText(hourOfDay + ":0" + minute);
-        }
-        else {
+        } else {
             newRequestSelectTimeText.setText(hourOfDay + ":" + minute);
         }
     }
@@ -205,4 +200,13 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
         Toast toast = Toast.makeText(context, str, duration);
         toast.show();
     }
+
+    public String getLocationLatLong() {
+        return locationLatLong;
+    }
+
+    public void setLocationLatLong(String locationLatLong) {
+        this.locationLatLong = locationLatLong;
+    }
+
 }

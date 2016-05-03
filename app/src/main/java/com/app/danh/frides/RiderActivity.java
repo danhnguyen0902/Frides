@@ -13,9 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
@@ -221,9 +222,10 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                System.out.println("GOT RESULT");
+                Place place = PlacePicker.getPlace(this, data);
+                String latLong = "" + place.getLatLng().latitude + "," + place.getLatLng().longitude;
+                ((NewRequestFragment) newRequestFragment).setLocationLatLong(latLong);
             }
         }
     }
@@ -270,9 +272,21 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         } else if (tab.equalsIgnoreCase("newRequestFrag")) {
-            ((NewRequestFragment)newRequestFragment).resetForm();
-            ((NewRequestFragment)newRequestFragment).popToast("Your ride has been posted");
+            ((NewRequestFragment) newRequestFragment).resetForm();
+            ((NewRequestFragment) newRequestFragment).popToast("Your ride has been posted");
 
+        }
+    }
+
+    public void startGoogleMapsPlacePicker() {
+        try {
+            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
+            Intent ggMapIntent = intentBuilder.build(this);
+            startActivityForResult(ggMapIntent, PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
         }
     }
 
@@ -283,21 +297,24 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
     @Override
     public void onButtonClicked(JSONObject obj) {
         if (tab.equalsIgnoreCase("newRequestFrag")) {
-            postDataParams.clear();
-            try {
-                postDataParams.put("title", obj.get("title").toString());
-                postDataParams.put("date", obj.get("date").toString());
-                postDataParams.put("time", obj.get("time").toString());
-                postDataParams.put("contact info", obj.get("contact info").toString());
-                postDataParams.put("only email", obj.get("only email").toString());
-                postDataParams.put("location", obj.get("location").toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (obj == null) {
+                startGoogleMapsPlacePicker();
+            } else {
+                postDataParams.clear();
+                try {
+                    postDataParams.put("title", obj.get("title").toString());
+                    postDataParams.put("date", obj.get("date").toString());
+                    postDataParams.put("time", obj.get("time").toString());
+                    postDataParams.put("contact info", obj.get("contact info").toString());
+                    postDataParams.put("only email", obj.get("only email").toString());
+                    postDataParams.put("location", obj.get("location").toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Data data = new Data("POST", "http://52.38.64.32/main/submit_request", postDataParams);
+                myAsyncTask = new MyAsyncTask(this);
+                myAsyncTask.execute(data);
             }
-            Data data = new Data("POST", "http://52.38.64.32/main/submit_request", postDataParams);
-            myAsyncTask = new MyAsyncTask(this);
-            myAsyncTask.execute(data);
-
 
         } else if (tab.equalsIgnoreCase("accountFrag")) {
             accountFrag = "update info";
