@@ -84,7 +84,7 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
         //---------------------------------------------------------------------------
         topBarText = (TextView) findViewById(R.id.topTitle);
 
-        rideListFragment = (Fragment) new RideListFragment();
+        rideListFragment = new DriveListFragment();
         accountFragment = new AccountFragment();
         myRideFragment = new MyRideFragment();
 

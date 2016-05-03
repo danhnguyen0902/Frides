@@ -79,8 +79,8 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
         postNewRequest.setOnClickListener(this);
 
         calendar = Calendar.getInstance();
-        newRequestSelectDateText.setText(calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.YEAR));
-        newRequestSelectTimeText.setText(calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":00");
+        resetForm();
+
         return view;
     }
     PlacePicker.IntentBuilder intentBuilder;
@@ -128,10 +128,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
             HashMap<String, String> postData = new HashMap<String, String>();
 
             postData.put("title", newRequestTitle.getText().toString());
-            String date = newRequestSelectDateText.getText().toString();
-            String[] parts = date.split("/");
-            date = parts[2] + "-" + parts[0] + "-" + parts[1];
-            postData.put("date", date);
+            postData.put("date", newRequestSelectDateText.getText().toString());
             postData.put("time", newRequestSelectTimeText.getText().toString());
             if (onlyEmail.isChecked() == false) {
                 postData.put("contact info", newRequestContactInfo.getText().toString());
@@ -154,9 +151,10 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
 
         }
     }
-     @Override
-     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-         System.out.println("In On activity Result");
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        System.out.println("In On activity Result");
         if (requestCode == ((RiderActivity) getActivity()).PLACE_PICKER_REQUEST) {
             if (resultCode == ((RiderActivity) getActivity()).RESULT_OK) {
                 System.out.println("IIn Result OK");
@@ -165,14 +163,20 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
             }
         }
     }
+
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        newRequestSelectDateText.setText(monthOfYear + "/" + dayOfMonth + "/" + year);
+        newRequestSelectDateText.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        newRequestSelectTimeText.setText(hourOfDay + ":"  + minute + ":" + "00");
+        if (minute < 10) {
+            newRequestSelectTimeText.setText(hourOfDay + ":0" + minute);
+        }
+        else {
+            newRequestSelectTimeText.setText(hourOfDay + ":" + minute);
+        }
     }
 
     @Override
@@ -190,7 +194,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onSuccessfulExecute(String response) {
-        if (response.compareToIgnoreCase("Account is registered") == 0)
+        if (response.compareToIgnoreCase("Ride request is successfully submitted!") == 0)
         {
             popToast("Successfully Posted!");
             resetForm();
@@ -204,6 +208,8 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
         newRequestContactInfo.setText("");
         newRequestTitle.setText("");
         onlyEmail.setChecked(false);
+        newRequestSelectDateText.setText("");
+        newRequestSelectTimeText.setText("");
     }
     private void popToast(String str) {
         Context context = this.getContext();//getApplicationContext();
