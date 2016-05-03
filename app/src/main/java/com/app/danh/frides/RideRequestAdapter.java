@@ -39,7 +39,6 @@ public class RideRequestAdapter extends ArrayAdapter<JSONObject> {
         TextView rideListLong = (TextView) rowView.findViewById(R.id.rideListLong);
         TextView rideListAccepted = (TextView) rowView.findViewById(R.id.rideListAccepted);
 
-
         try {
             JSONObject rowData = data.get(position).getJSONObject("fields");
             rideListTitle.setText(rowData.getString("title"));

@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:text="My List"
+            android:text="My Requests"
             android:textColor="#ffffff"
             android:paddingBottom="5dp"/>
 
