@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
@@ -279,15 +281,16 @@ public class RiderActivity extends FragmentActivity implements View.OnClickListe
     }
 
     public void startGoogleMapsPlacePicker() {
+        PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
+        Intent ggMapIntent = null;
         try {
-            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
-            Intent ggMapIntent = intentBuilder.build(this);
-            startActivityForResult(ggMapIntent, PLACE_PICKER_REQUEST);
+            ggMapIntent = intentBuilder.build(this);
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
         } catch (GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
         }
+        startActivityForResult(ggMapIntent, PLACE_PICKER_REQUEST);
     }
 
     public void onConnectionFailed(ConnectionResult connectionResult) {
