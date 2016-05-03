@@ -1,6 +1,7 @@
 package com.app.danh.frides;
 
 import android.app.ListFragment;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -23,7 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class DriverActivity extends FragmentActivity implements View.OnClickListener, OnMyAsyncListener, AccountFragment.OnFragmentListener {
+public class DriverActivity extends FragmentActivity implements View.OnClickListener,
+        OnMyAsyncListener, AccountFragment.OnFragmentListener, DriveListFragment.OnFragmentListener {
     FragmentPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
     List<Fragment> fragmentList;
@@ -146,7 +148,7 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
 
                         // Get all ride requests
                         postDataParams.clear();
-                        data = new Data("GET", "http://52.38.64.32/main/get_all_requests", postDataParams);
+                        data = new Data("GET", "http://52.38.64.32/main/get_open_requests", postDataParams);
                         myAsyncTask = new MyAsyncTask(DriverActivity.this);
                         myAsyncTask.execute(data);
 
@@ -272,5 +274,13 @@ public class DriverActivity extends FragmentActivity implements View.OnClickList
         Data data = new Data("POST", "http://52.38.64.32/main/personal", postDataParams);
         myAsyncTask = new MyAsyncTask(this);
         myAsyncTask.execute(data);
+    }
+
+    @Override
+    public void onItemClicked(JSONObject obj) {
+        Intent intent = new Intent(this, ShowRequestActivity.class);
+
+        intent.putExtra("item", obj.toString());
+        this.startActivity(intent);
     }
 }

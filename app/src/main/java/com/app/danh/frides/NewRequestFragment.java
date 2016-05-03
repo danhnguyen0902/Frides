@@ -179,7 +179,6 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
         }
     }
 
-
     @Override
     public void onDetach() {
         super.onDetach();

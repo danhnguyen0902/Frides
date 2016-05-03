@@ -21,30 +21,23 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Date"/>
+        android:text="Date" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/date"
-        android:hint="yyyy-mm-dd"/>
+        android:id="@+id/date" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Time"/>
+        android:text="Time" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/time"
-        android:hint="hh:mm"/>
+        android:id="@+id/time" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Location"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/locationBtn"
-        android:text="Select Location"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,18 +46,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/contactInfo"/>
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Only use my Email"
-        android:id="@+id/onlyEmail"
-        android:layout_gravity="center"/>
 
     <Button
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:id="@+id/updateBtn"
-        android:text="Update Request"
+        android:id="@+id/takeBtn"
+        android:text="Take the Request"
         android:layout_gravity="center"
         android:background="#0288d1" />
+
 </LinearLayout>

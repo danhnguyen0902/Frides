@@ -208,19 +208,10 @@ public class EditRequestActivity extends AppCompatActivity implements View.OnCli
     public void onSuccessfulExecute(String response) {
         if (response.compareToIgnoreCase("Ride request is successfully updated!") == 0) {
             popToast("Successfully Updated!");
-            resetForm();
         }
         myAsyncTask.cancel(true);
         myAsyncTask = null;
 
-    }
-
-    private void resetForm() {
-        contactInfo.setText("");
-        title.setText("");
-        onlyEmail.setChecked(false);
-        date.setText("");
-        time.setText("");
     }
 
     private void popToast(String str) {
