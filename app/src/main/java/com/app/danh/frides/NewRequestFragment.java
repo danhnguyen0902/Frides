@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
     Button newRequestSelectLocationButton;
     Button postNewRequest;
     CheckBox onlyEmail;
+    TextView locationTxtView;
 
 
     String locationLatLong;
@@ -58,6 +60,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
         onlyEmail = (CheckBox) view.findViewById(R.id.onlyEmail);
         newRequestContactInfo = (EditText) view.findViewById(R.id.newRequestContactInfo);
         locationLatLong = "";
+        locationTxtView = (TextView) view.findViewById(R.id.locationTextView);
 
         onlyEmail.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -207,6 +210,7 @@ public class NewRequestFragment extends Fragment implements View.OnClickListener
 
     public void setLocationLatLong(String locationLatLong) {
         this.locationLatLong = locationLatLong;
+        locationTxtView.setText("("+locationLatLong+")");
     }
 
 }
