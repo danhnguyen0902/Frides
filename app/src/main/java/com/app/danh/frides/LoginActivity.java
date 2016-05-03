@@ -19,6 +19,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     static String cookieHeader;
     HashMap<String, String> postDataParams;
     MyAsyncTask myAsyncTask = null;
+    TextView errorTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginBtn = (Button) findViewById(R.id.loginBtn);
         forgotPasswordBtn = (Button) findViewById(R.id.forgotPasswordBtn);
         registerBtn = (Button) findViewById(R.id.registerBtn);
+        errorTextView = (TextView) findViewById(R.id.errorTextView);
+
+        errorTextView.setText("");
 
         loginBtn.setOnClickListener(this);
         forgotPasswordBtn.setOnClickListener(this);
@@ -43,8 +47,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         if (v.getId() == loginBtn.getId()) {
             postDataParams.clear();
-            postDataParams.put("username", loginUsername.getText().toString());
-            postDataParams.put("password", loginPassword.getText().toString());
+            postDataParams.put("username", loginUsername.getText().toString().trim());
+            postDataParams.put("password", loginPassword.getText().toString().trim());
 
             Data data = new Data("POST", "http://52.38.64.32/main/login", postDataParams);
             myAsyncTask = new MyAsyncTask(this);
@@ -66,8 +70,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (response.contains("is logged in")) {
             String[] parts = response.split(" ");
             Intent myIntent = new Intent(this, MainActivity.class);
+            errorTextView.setText("");
+            loginPassword.setText("");
+            loginUsername.setText("");
             myIntent.putExtra("username", parts[0]);
             this.startActivity(myIntent);
+        } else
+        {
+            errorTextView.setText("Incorrect username or password!");
         }
     }
 }
