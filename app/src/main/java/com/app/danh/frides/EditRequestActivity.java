@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class EditRequestActivity extends AppCompatActivity implements View.OnCli
     Button updateBtn;
     CheckBox onlyEmail;
     String locationLatLong;
+    TextView locationTxtView;
 
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
@@ -70,6 +72,7 @@ public class EditRequestActivity extends AppCompatActivity implements View.OnCli
         updateBtn = (Button) findViewById(R.id.updateBtn);
         onlyEmail = (CheckBox) findViewById(R.id.onlyEmail);
         contactInfo = (EditText) findViewById(R.id.contactInfo);
+        locationTxtView = (TextView) findViewById(R.id.locationTxtView);
         locationLatLong = "";
         onlyEmail.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -98,6 +101,7 @@ public class EditRequestActivity extends AppCompatActivity implements View.OnCli
             time.setText(data.getString("time").toString());
             contactInfo.setText(data.getString("contact_info").toString());
             locationLatLong = data.getDouble("latitude") + "," + data.getDouble("longitude");
+            locationTxtView.setText("(" + locationLatLong + ")");
             onlyEmail.setChecked(false);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -150,15 +154,13 @@ public class EditRequestActivity extends AppCompatActivity implements View.OnCli
                 postData.put("only email", "true");
                 postData.put("contact info", "");
             }
-
+            postData.put("location", locationLatLong);
             try {
                 postData.put("pk", String.valueOf(jsonObj.getInt("pk")));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            //----------------------LACK OF GG MAPS API, HARD CODE A LOCATION----------------------------------------------------
-            postData.put("location", "37.2541066,-80.4138788");
             Data data = new Data("POST", "http://52.38.64.32/main/update_request", postData);
             myAsyncTask = new MyAsyncTask(this);
             myAsyncTask.execute(data);
@@ -171,8 +173,9 @@ public class EditRequestActivity extends AppCompatActivity implements View.OnCli
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 System.out.println("IIn Result OK");
-                final Place place = PlacePicker.getPlace(data, this);
+                final Place place = PlacePicker.getPlace(this, data);
                 locationLatLong = place.getLatLng().latitude + "," + place.getLatLng().longitude;
+                locationTxtView.setText("(" + locationLatLong + ")");
             }
         }
     }

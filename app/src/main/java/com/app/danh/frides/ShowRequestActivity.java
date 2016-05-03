@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -25,6 +26,7 @@ public class ShowRequestActivity extends AppCompatActivity implements View.OnCli
     EditText contactInfo;
     Button takeBtn;
     String locationLatLong;
+    TextView locationTxtView;
 
     JSONObject jsonObj;
     MyAsyncTask myAsyncTask;
@@ -48,6 +50,7 @@ public class ShowRequestActivity extends AppCompatActivity implements View.OnCli
         time = (EditText) findViewById(R.id.time);
         takeBtn = (Button) findViewById(R.id.takeBtn);
         contactInfo = (EditText) findViewById(R.id.contactInfo);
+        locationTxtView = (TextView) findViewById(R.id.locationTextView);
         locationLatLong = "";
 
         takeBtn.setOnClickListener(this);
@@ -59,6 +62,7 @@ public class ShowRequestActivity extends AppCompatActivity implements View.OnCli
             time.setText(data.getString("time").toString());
             contactInfo.setText(data.getString("contact_info").toString());
             locationLatLong = data.getDouble("latitude") + "," + data.getDouble("longitude");
+            locationTxtView.setText("Location: (" + locationLatLong + ")");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -74,8 +78,6 @@ public class ShowRequestActivity extends AppCompatActivity implements View.OnCli
                 e.printStackTrace();
             }
 
-            //----------------------LACK OF GG MAPS API, HARD CODE A LOCATION----------------------------------------------------
-            postData.put("location", "37.2541066,-80.4138788");
             Data data = new Data("POST", "http://52.38.64.32/main/accept_request", postData);
             myAsyncTask = new MyAsyncTask(this);
             myAsyncTask.execute(data);
